@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data;
 using System.Globalization;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Web.Services.Protocols;
 using System.Xml;
 using System.Xml.XPath;
@@ -115,7 +116,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
             base.OnPreRender(e);
         }
 
-        private bool IsValidRecyclableItemType(string type, IWasteTypesDataSource wasteTypes)
+        private static bool IsValidRecyclableItemType(string type, IWasteTypesDataSource wasteTypes)
         {
             var possibleTypes = wasteTypes.LoadWasteTypes();
             return possibleTypes.Contains(type);
@@ -159,14 +160,9 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
 
             // call the appropriate method which returns a dataset
             DataSet ds = GetNearestRecyclingSitesRadialFromCms(rad, _postCode);
-            // get a default view on the dataset which we can then sort and filter
+            // get a default view on the dataset which we can then sort 
             DataView dv = ds.Tables[0].DefaultView;
-            // apply filtering if a specific waste type has been selected by the user
-            if (_wasteType != "Anything")
-            {
-                string filterExp = "[" + _wasteType + "] = '" + _wasteType + "'";
-                dv.RowFilter = filterExp;
-            }
+            
             // sort by distance
             dv.Sort = "Miles ASC";
 
@@ -291,11 +287,14 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         /// <returns>An ADO.net DataSet.</returns>
         private DataSet GetSiteData()
         {
-            DataSet dsCms = Cache.Get("wastesitedata") as DataSet;
+            var cacheKey = "wastesitedata";
+            if (_wasteType != "Anything") cacheKey += Regex.Replace(_wasteType, "[^A-Za-z]", String.Empty);
+
+            DataSet dsCms = Cache.Get(cacheKey) as DataSet;
             if (dsCms == null)
             {
                 dsCms = GetDataSetFromCMS();
-                Cache.Insert("wastesitedata", dsCms, null, DateTime.Now.AddHours(1), System.Web.Caching.Cache.NoSlidingExpiration);
+                Cache.Insert(cacheKey, dsCms, null, DateTime.Now.AddHours(1), System.Web.Caching.Cache.NoSlidingExpiration);
             }
             return dsCms;
         }
@@ -308,7 +307,8 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         {
             using (var ds = RecyclingSiteDataFormat.CreateDataSet())
             {
-                new UmbracoRecyclingSiteDataSource().AddRecyclingSites(ds.Tables[0]);
+                // apply filtering if a specific waste type has been selected by the user
+                new UmbracoRecyclingSiteDataSource(_wasteType != "Anything" ? _wasteType : String.Empty).AddRecyclingSites(ds.Tables[0]);
                 ds.AcceptChanges();
                 return ds;
             }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.IO;
+using System.Web;
 using EsccWebTeam.Data.Web;
 using EsccWebTeam.Data.Xml;
 using Exceptionless.Json;
@@ -14,6 +15,17 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
     /// </summary>
     public class UmbracoRecyclingSiteDataSource : IRecyclingSiteDataSource
     {
+        private readonly string _wasteType;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UmbracoRecyclingSiteDataSource"/> class.
+        /// </summary>
+        /// <param name="wasteType">Type of the waste.</param>
+        public UmbracoRecyclingSiteDataSource(string wasteType)
+        {
+            _wasteType = wasteType;
+        }
+
         public void AddRecyclingSites(DataTable table)
         {
             if (table == null) throw new ArgumentNullException("table");
@@ -23,6 +35,10 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
             }
 
             var url = ConfigurationManager.AppSettings["RecyclingSiteDataUrl"];
+            if (!String.IsNullOrEmpty(_wasteType))
+            {
+                url += "&acceptsWaste=" + HttpUtility.UrlEncode(_wasteType);
+            }
             var absoluteUrl = Iri.MakeAbsolute(new Uri(url));
             var request = XmlHttpRequest.Create(absoluteUrl);
 #if DEBUG

@@ -87,6 +87,7 @@
     <Compile Include="FakePostcodeLookup.cs" />
     <Compile Include="FakeRecyclingSiteDataSource.cs" />
     <Compile Include="FakeWasteTypesDataSource.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IPostcodeLookup.cs" />
     <Compile Include="IRecyclingSiteDataSource.cs" />
     <Compile Include="IWasteTypesDataSource.cs" />

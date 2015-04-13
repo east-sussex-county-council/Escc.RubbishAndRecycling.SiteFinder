@@ -281,7 +281,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         /// <summary>
         /// Gets a DataSet of household waste and recycling centre info from Application or calls GetDataSetFromCMS() if no cached version exists.
         /// </summary>
-        /// <seealso cref="GetDataSetFromCMS()">
+        /// <seealso cref="DataSetFromCms">
         /// The method which calls the CM Server web service.
         /// </seealso>
         /// <returns>An ADO.net DataSet.</returns>
@@ -293,7 +293,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
             DataSet dsCms = Cache.Get(cacheKey) as DataSet;
             if (dsCms == null)
             {
-                dsCms = GetDataSetFromCMS();
+                dsCms = DataSetFromCms();
                 Cache.Insert(cacheKey, dsCms, null, DateTime.Now.AddHours(1), System.Web.Caching.Cache.NoSlidingExpiration);
             }
             return dsCms;
@@ -303,7 +303,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         /// Extracts placeholder content and uses this to create a dataset.
         /// </summary>
         /// <returns>DataSet of all household waste and recycling centres.</returns>
-        public DataSet GetDataSetFromCMS()
+        public DataSet DataSetFromCms()
         {
             using (var ds = RecyclingSiteDataFormat.CreateDataSet())
             {

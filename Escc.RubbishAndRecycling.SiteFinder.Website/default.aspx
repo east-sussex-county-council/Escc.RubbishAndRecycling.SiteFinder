@@ -1,5 +1,5 @@
 <%@ Register TagPrefix="uc1" TagName="FindNearestSiteSrch" Src="RecyclingSiteFinder.ascx" %>
-<%@ Page language="c#" Codebehind="WasteSearch.aspx.cs" AutoEventWireup="True" Inherits="Escc.RubbishAndRecycling.SiteFinder.Website.WasteSearch" %>
+<%@ Page language="c#" Codebehind="default.aspx.cs" AutoEventWireup="True" Inherits="Escc.RubbishAndRecycling.SiteFinder.Website.WasteSearch" %>
 
 <asp:Content runat="server" ContentPlaceHolderID="metadata">
 	<Egms:MetadataControl id="headcontent" runat="server" 

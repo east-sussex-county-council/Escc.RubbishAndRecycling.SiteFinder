@@ -80,7 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="RecyclingSiteFinder.ascx" />
-    <Content Include="TopicSection_RecyclingSiteFinder.ascx" />
+    <None Include="TopicSection_RecyclingSiteFinder.ascx" />
     <Content Include="default.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -135,8 +135,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config" />
-    <Content Include="Web.config.transform" />
+    <None Include="packages.config" />
+    <None Include="Web.config.transform" />
     <None Include="Web.example.config" />
   </ItemGroup>
   <PropertyGroup>

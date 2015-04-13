@@ -1,7 +1,7 @@
-<%@ Control Language="c#" AutoEventWireup="true" CodeBehind="SearchForm.ascx.cs"
-    Inherits="Escc.RubbishAndRecycling.SiteFinder.Website.SearchForm" %>
+<%@ Control Language="c#" AutoEventWireup="true" CodeBehind="RecyclingSiteFinder.ascx.cs"
+    Inherits="Escc.RubbishAndRecycling.SiteFinder.Website.RecyclingSiteFinder" %>
 <div class="form short-form">
-    <h2>Find your nearest recycling site</h2>
+    <h2 id="h2" runat="server">Find your nearest recycling site</h2>
     <div class="formPart">
         <asp:Label CssClass="formLabel" AssociatedControlID="wasteTypes" runat="server">I need to recycle</asp:Label>
         <asp:DropDownList ID="wasteTypes" CssClass="formControl" runat="server" />

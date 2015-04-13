@@ -1,6 +1,7 @@
 using System;
 using System.Configuration;
 using System.Web;
+using System.Web.UI.HtmlControls;
 using EsccWebTeam.Data.Web;
 using EsccWebTeam.EastSussexGovUK;
 
@@ -9,16 +10,24 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
     /// <summary>
     ///	User control encapsulating Household waste and recycling point search controls and functions.
     /// </summary>
-    public partial class SearchForm : System.Web.UI.UserControl
+    public partial class RecyclingSiteFinder : System.Web.UI.UserControl
     {
-        #region page event handlers
+        protected HtmlGenericControl h2;
+
+        /// <summary>
+        /// Gets or sets whether to display a title for this control.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> to display title; otherwise, <c>false</c>.
+        /// </value>
+        public bool DisplayTitle { get; set; }
+
         protected void Page_Load(object sender, System.EventArgs e)
         {
-            // Wire up button
-            this.Go.Click += new EventHandler(Go_Click);
+            this.h2.Visible = DisplayTitle;
 
-
-            if (!IsPostBack)
+            // Use HasKeys test instead of IsPostback or a Click event, so that it works in MVC
+            if (!Request.Form.HasKeys())
             {
                 //populate the waste type drop down.
                 PopulateWasteTypes();
@@ -38,30 +47,24 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
                     }
                 }
             }
-        }
-
-        void Go_Click(object sender, EventArgs e)
-        {
-            // Check for setting
-            if (String.IsNullOrEmpty(ConfigurationManager.AppSettings["RecyclingSiteFinderBaseUrl"]))
+            else
             {
-                throw new ConfigurationErrorsException("<appSettings><add key=\"RecyclingSiteFinderBaseUrl\" /></appSettings> is missing");
-            }
+                // Check for setting
+                if (String.IsNullOrEmpty(ConfigurationManager.AppSettings["RecyclingSiteFinderBaseUrl"]))
+                {
+                    throw new ConfigurationErrorsException("<appSettings><add key=\"RecyclingSiteFinderBaseUrl\" /></appSettings> is missing");
+                }
 
-            // Redirect to URL which can be bookmarked, and tested in Google Analytics
-            var siteContext = new EastSussexGovUKContext();
-            var redirectToUrl = new Uri(ConfigurationManager.AppSettings["RecyclingSiteFinderBaseUrl"] + "?postcode=" + HttpUtility.UrlEncode(this.postcode.Text) + "&type=" + Request.Form[this.wasteTypes.UniqueID]);
-            if (siteContext.RequestUrl.ToString() != redirectToUrl.ToString())
-            {
-                Http.Status303SeeOther(redirectToUrl);
+                // Redirect to URL which can be bookmarked, and tested in Google Analytics
+                // Use Request.Form to access postback data so that it works from MVC
+                var siteContext = new EastSussexGovUKContext();
+                var redirectToUrl = new Uri(ConfigurationManager.AppSettings["RecyclingSiteFinderBaseUrl"] + "?postcode=" + HttpUtility.UrlEncode(Request.Form[this.postcode.UniqueID]) + "&type=" + Request.Form[this.wasteTypes.UniqueID]);
+                if (siteContext.RequestUrl.ToString() != redirectToUrl.ToString())
+                {
+                    Http.Status303SeeOther(redirectToUrl);
+                }
             }
         }
-
-
-        #endregion
-
-        #region private methods
-
 
         /// <summary>
         /// Populates the waste type drop down and inserts an 'all types' item at index 0.
@@ -77,8 +80,5 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
             this.wasteTypes.DataBind();
             this.wasteTypes.Items.Insert(0, "Anything");
         }
-
-        #endregion
-
     }
 }

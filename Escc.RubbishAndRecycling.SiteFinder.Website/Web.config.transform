@@ -1,0 +1,15 @@
+﻿<?xml version="1.0"?>
+<configuration>
+  <appSettings>
+    <add key="RecyclingSiteFinderBaseUrl" value="https://hostname/WasteSearch.aspx"/>
+    <add key="RecyclingSiteDataUrl" value="https://hostname/umbraco/api/location/list?type=RecyclingSite"/>
+    <add key="WasteTypesDataUrl" value="https://hostname/umbraco/api/wastetypes/list"/>
+  </appSettings>
+  <system.web>
+    <pages>
+      <tagMapping>
+        <add tagType="System.Web.UI.WebControls.Button" mappedTagType="Escc.FormControls.WebForms.EsccButton, Escc.FormControls.WebForms" />
+      </tagMapping>
+    </pages>
+  </system.web>
+</configuration>

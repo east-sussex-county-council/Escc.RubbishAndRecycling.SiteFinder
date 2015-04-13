@@ -10,7 +10,7 @@
 namespace Escc.RubbishAndRecycling.SiteFinder.Website {
     
     
-    public partial class SearchForm {
+    public partial class RecyclingSiteFinder {
         
         /// <summary>
         /// wasteTypes control.

@@ -46,7 +46,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Escc.RubbishAndRecycling.SiteFinder.Website.SearchForm Srch;
+        protected global::Escc.RubbishAndRecycling.SiteFinder.Website.RecyclingSiteFinder Srch;
         
         /// <summary>
         /// paging control.

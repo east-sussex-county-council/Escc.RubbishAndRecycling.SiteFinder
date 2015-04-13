@@ -79,7 +79,8 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="SearchForm.ascx" />
+    <Content Include="RecyclingSiteFinder.ascx" />
+    <Content Include="TopicSection_RecyclingSiteFinder.ascx" />
     <Content Include="WasteSearch.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -93,12 +94,12 @@
     <Compile Include="IWasteTypesDataSource.cs" />
     <Compile Include="PostcodeLookupWebService.cs" />
     <Compile Include="RecyclingSiteDataFormat.cs" />
-    <Compile Include="SearchForm.ascx.cs">
-      <DependentUpon>SearchForm.ascx</DependentUpon>
+    <Compile Include="RecyclingSiteFinder.ascx.cs">
+      <DependentUpon>RecyclingSiteFinder.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="SearchForm.ascx.designer.cs">
-      <DependentUpon>SearchForm.ascx</DependentUpon>
+    <Compile Include="RecyclingSiteFinder.ascx.designer.cs">
+      <DependentUpon>RecyclingSiteFinder.ascx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UmbracoWasteTypesDataSource.cs" />
@@ -135,6 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+    <Content Include="Web.config.transform" />
     <None Include="Web.example.config" />
   </ItemGroup>
   <PropertyGroup>

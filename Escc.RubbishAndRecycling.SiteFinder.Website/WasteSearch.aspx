@@ -1,4 +1,4 @@
-<%@ Register TagPrefix="uc1" TagName="FindNearestSiteSrch" Src="SearchForm.ascx" %>
+<%@ Register TagPrefix="uc1" TagName="FindNearestSiteSrch" Src="RecyclingSiteFinder.ascx" %>
 <%@ Page language="c#" Codebehind="WasteSearch.aspx.cs" AutoEventWireup="True" Inherits="Escc.RubbishAndRecycling.SiteFinder.Website.WasteSearch" %>
 
 <asp:Content runat="server" ContentPlaceHolderID="metadata">
@@ -23,7 +23,7 @@
 
             <p ID="litError" Runat="server" visible="false"></p>
             </div>
-	<uc1:FindNearestSiteSrch id="Srch" runat="server"></uc1:FindNearestSiteSrch>
+    <uc1:FindNearestSiteSrch id="Srch" runat="server" DisplayTitle="false" />
       
     <NavigationControls:PagingController id="paging" runat="server" ResultsTextSingular="result" ResultsTextPlural="results" />
     <NavigationControls:PagingBarControl id="pagingTop" runat="server" PagingControllerId="paging" />

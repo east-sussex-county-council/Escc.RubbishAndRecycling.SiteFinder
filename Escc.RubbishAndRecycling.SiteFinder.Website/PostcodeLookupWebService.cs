@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Configuration;
+using System.Net;
 using Escc.Exceptions.Soap;
 using Escc.FormControls.WebForms.AddressFinder;
 using Escc.Geo;
@@ -21,6 +23,11 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
             {
                 try
                 {
+                    if (!String.IsNullOrEmpty(ConfigurationManager.AppSettings["ConnectToCouncilWebServicesAccount"]) &&
+                        !String.IsNullOrEmpty(ConfigurationManager.AppSettings["ConnectToCouncilWebServicesPassword"]))
+                    {
+                        af.Credentials = new NetworkCredential(ConfigurationManager.AppSettings["ConnectToCouncilWebServicesAccount"], ConfigurationManager.AppSettings["ConnectToCouncilWebServicesPassword"]);
+                    }
                     var eastingAndNorthing = af.AggregateEastingsAndNorthings(postcode);
                     var converter = new OrdnanceSurveyToLatitudeLongitudeConverter();
                     return converter.ConvertOrdnanceSurveyToLatitudeLongitude(eastingAndNorthing.Easting, eastingAndNorthing.Northing);

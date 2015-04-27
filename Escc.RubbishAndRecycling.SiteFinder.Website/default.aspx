@@ -2,16 +2,16 @@
 <%@ Page language="c#" Codebehind="default.aspx.cs" AutoEventWireup="True" Inherits="Escc.RubbishAndRecycling.SiteFinder.Website.WasteSearch" %>
 
 <asp:Content runat="server" ContentPlaceHolderID="metadata">
-	<Egms:MetadataControl id="headcontent" runat="server" 
+	<Metadata:MetadataControl id="headcontent" runat="server" 
 		Title="Find your nearest recycling site"
 		IpsvPreferredTerms="Recycling (waste)"
 		DateCreated="2004-11-16"
 		LgslNumbers="534"
 		/>
-    <Egms:Css runat="server" Files="FormsSmall" />
+    <Client:Css runat="server" Files="FormsSmall" />
     <EastSussexGovUK:ContextContainer runat="server" Desktop="true">
-        <Egms:Css runat="server" Files="FormsMedium" MediaConfiguration="Medium" />
-        <Egms:Css runat="server" Files="FormsLarge" MediaConfiguration="Large" />
+        <Client:Css runat="server" Files="FormsMedium" MediaConfiguration="Medium" />
+        <Client:Css runat="server" Files="FormsLarge" MediaConfiguration="Large" />
     </EastSussexGovUK:ContextContainer>
 </asp:Content>
 

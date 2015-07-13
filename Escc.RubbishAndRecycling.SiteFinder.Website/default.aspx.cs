@@ -9,6 +9,7 @@ using System.Web.Services.Protocols;
 using System.Xml;
 using System.Xml.XPath;
 using Escc.Geo;
+using EsccWebTeam.Data.Web;
 using EsccWebTeam.EastSussexGovUK;
 using Escc.Exceptions.Soap;
 
@@ -35,6 +36,12 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
                     {
                         _postCode = Request.QueryString["postcode"];
                         _wasteType = Request.QueryString["type"];
+                        
+                        // Check for old wording and redirect rather than error
+                        if (_wasteType == "All waste types") 
+                        {
+                            Http.Status301MovedPermanently(new Uri("default.aspx?postcode=" + _postCode + "&type=Anything", UriKind.Relative));
+                        }
 
                         var wasteTypes = new UmbracoWasteTypesDataSource();
                         if (_wasteType != "Anything" && !IsValidRecyclableItemType(_wasteType, wasteTypes))

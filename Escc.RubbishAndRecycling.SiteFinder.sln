@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Escc.RubbishAndRecycling.SiteFinder.Website", "Escc.RubbishAndRecycling.SiteFinder.Website\Escc.RubbishAndRecycling.SiteFinder.Website.csproj", "{5054390D-B725-4010-B603-B3520F869BB6}"
 EndProject
@@ -14,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EsccWebTeam.EastSussexGovUK", "..\Escc.EastSussexGovUK\EsccWebTeam.EastSussexGovUK.csproj", "{1426FEF0-23DC-4C23-AE15-67F2527BD741}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EsccWebTeam.EastSussexGovUK", "..\Escc.EastSussexGovUK\Escc.EastSussexGovUK\EsccWebTeam.EastSussexGovUK.csproj", "{1426FEF0-23DC-4C23-AE15-67F2527BD741}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EsccWebTeam.NavigationControls", "..\Escc.NavigationControls\EsccWebTeam.NavigationControls.csproj", "{0323F668-1723-44A1-8C94-F91DC59EF315}"
 EndProject
@@ -23,8 +23,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EsccWebTeam.Data.Xml", "..\Escc.Data.Xml\EsccWebTeam.Data.Xml.csproj", "{86B2725C-9C37-44A4-93C7-F5122AFA0809}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EsccWebTeam.HouseStyle", "..\Escc.HouseStyle\EsccWebTeam.HouseStyle.csproj", "{1C429378-DBF2-4AF7-88AC-C059AA163682}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EsccWebTeam.Feeds", "..\Escc.Feeds\EsccWebTeam.Feeds.csproj", "{08008B80-1B37-41B9-935B-FDDDDB4DAE84}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EsccWebTeam.Data.ActiveDirectory", "..\Escc.Data.ActiveDirectory\EsccWebTeam.Data.ActiveDirectory.csproj", "{5F1BBB42-C1C6-4110-A3E4-720420A3C27D}"
 EndProject
@@ -77,12 +75,6 @@ Global
 		{1C429378-DBF2-4AF7-88AC-C059AA163682}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1C429378-DBF2-4AF7-88AC-C059AA163682}.UAT|Any CPU.ActiveCfg = Release|Any CPU
 		{1C429378-DBF2-4AF7-88AC-C059AA163682}.UAT|Any CPU.Build.0 = Release|Any CPU
-		{08008B80-1B37-41B9-935B-FDDDDB4DAE84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{08008B80-1B37-41B9-935B-FDDDDB4DAE84}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{08008B80-1B37-41B9-935B-FDDDDB4DAE84}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{08008B80-1B37-41B9-935B-FDDDDB4DAE84}.Release|Any CPU.Build.0 = Release|Any CPU
-		{08008B80-1B37-41B9-935B-FDDDDB4DAE84}.UAT|Any CPU.ActiveCfg = Release|Any CPU
-		{08008B80-1B37-41B9-935B-FDDDDB4DAE84}.UAT|Any CPU.Build.0 = Release|Any CPU
 		{5F1BBB42-C1C6-4110-A3E4-720420A3C27D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5F1BBB42-C1C6-4110-A3E4-720420A3C27D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F1BBB42-C1C6-4110-A3E4-720420A3C27D}.Release|Any CPU.ActiveCfg = Release|Any CPU

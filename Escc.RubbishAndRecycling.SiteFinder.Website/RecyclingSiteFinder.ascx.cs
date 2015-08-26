@@ -57,12 +57,26 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
 
                 // Redirect to URL which can be bookmarked, and tested in Google Analytics
                 // Use Request.Form to access postback data so that it works from MVC
-                var siteContext = new EastSussexGovUKContext();
                 var redirectToUrl = new Uri(ConfigurationManager.AppSettings["RecyclingSiteFinderBaseUrl"] + "?postcode=" + HttpUtility.UrlEncode(Request.Form[this.postcode.UniqueID]) + "&type=" + Request.Form[this.wasteTypes.UniqueID], UriKind.RelativeOrAbsolute);
-                if (siteContext.RequestUrl.ToString() != redirectToUrl.ToString())
+                if (!IsSameQueryAgain(redirectToUrl))
                 {
                     Http.Status303SeeOther(redirectToUrl);
                 }
+            }
+        }
+
+        private static bool IsSameQueryAgain(Uri redirectToUrl)
+        {
+            if (redirectToUrl == null) throw new ArgumentNullException("redirectToUrl");
+
+            var siteContext = new EastSussexGovUKContext();
+            if (redirectToUrl.IsAbsoluteUri)
+            {
+                return siteContext.RequestUrl.ToString() == redirectToUrl.ToString();
+            }
+            else
+            {
+                return siteContext.RequestUrl.PathAndQuery == redirectToUrl.ToString();                
             }
         }
 

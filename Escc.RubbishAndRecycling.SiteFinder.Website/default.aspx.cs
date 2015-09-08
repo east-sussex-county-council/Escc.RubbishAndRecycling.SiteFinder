@@ -25,37 +25,66 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         private string _wasteType;
         private bool _error400 = true;
 
-        protected void Page_Load(object sender, System.EventArgs e)
+        protected override void OnPreRender(EventArgs e)
         {
-            if (!IsPostBack)
+            // Load data at PreRender event so that RecyclingSiteFinder.ascx has a chance to redirect before any unnecessary lookups are done.
+            // If this code runs at PageLoad we might look up some data then be redirected away and have to look up again.
+
+            // Feed options from another page
+            if (!String.IsNullOrEmpty(Request.QueryString["postcode"]) && !String.IsNullOrEmpty(Request.QueryString["type"]))
             {
-                // Feed options from another page
-                if (!String.IsNullOrEmpty(Request.QueryString["postcode"]) && !String.IsNullOrEmpty(Request.QueryString["type"]))
+                try
+                {
+                    _postCode = Request.QueryString["postcode"];
+                    _wasteType = Request.QueryString["type"];
+                        
+                    // Check for old wording and redirect rather than error
+                    if (_wasteType == "All waste types") 
+                    {
+                        Http.Status301MovedPermanently(new Uri("default.aspx?postcode=" + _postCode + "&type=Anything", UriKind.Relative));
+                    }
+
+                    var wasteTypes = new UmbracoWasteTypesDataSource();
+                    if (_wasteType != "Anything" && !IsValidRecyclableItemType(_wasteType, wasteTypes))
+                    {
+                        EastSussexGovUKContext.HttpStatus400BadRequest(this.container);
+                        _error400 = true;
+                        return;
+                    }
+
+                    GetAndBindData();
+                }
+                catch (SoapException ex)
+                {
+
+                    _helper = new SoapExceptionWrapper(ex);
+
+                    if (_helper.Message.Contains("The postcode entered could not be found.") ||
+                        _helper.Message.Contains("The postcode entered appears to be incorrect."))
+                    {
+                        litError.InnerHtml = "The postcode was not found in East Sussex. Please check the postcode and try again.";
+                    }
+                    else
+                    {
+                        litError.InnerHtml = _helper.Message + " ";
+                        litError.InnerHtml += _helper.Description;
+                    }
+
+                    litError.InnerHtml = FormatException(litError.InnerHtml);
+                    litError.Visible = true;
+                }
+            }
+            else
+            {
+                // check whether we are currently paging through results
+                if (_postCode != null & _wasteType != null)
                 {
                     try
                     {
-                        _postCode = Request.QueryString["postcode"];
-                        _wasteType = Request.QueryString["type"];
-                        
-                        // Check for old wording and redirect rather than error
-                        if (_wasteType == "All waste types") 
-                        {
-                            Http.Status301MovedPermanently(new Uri("default.aspx?postcode=" + _postCode + "&type=Anything", UriKind.Relative));
-                        }
-
-                        var wasteTypes = new UmbracoWasteTypesDataSource();
-                        if (_wasteType != "Anything" && !IsValidRecyclableItemType(_wasteType, wasteTypes))
-                        {
-                            EastSussexGovUKContext.HttpStatus400BadRequest(this.container);
-                            _error400 = true;
-                            return;
-                        }
-
                         GetAndBindData();
                     }
                     catch (SoapException ex)
                     {
-
                         _helper = new SoapExceptionWrapper(ex);
 
                         if (_helper.Message.Contains("The postcode entered could not be found.") ||
@@ -71,51 +100,10 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
 
                         litError.InnerHtml = FormatException(litError.InnerHtml);
                         litError.Visible = true;
-
-                        // hide paging controls and repeater if an error occurs
-                        TogglePaging(false);
-                    }
-                }
-                else
-                {
-                    // hide paging controls first time round
-                    TogglePaging(false);
-
-                    // check whether we are currently paging through results
-                    if (_postCode != null & _wasteType != null)
-                    {
-                        try
-                        {
-                            GetAndBindData();
-                        }
-                        catch (SoapException ex)
-                        {
-                            _helper = new SoapExceptionWrapper(ex);
-
-                            if (_helper.Message.Contains("The postcode entered could not be found.") ||
-                                _helper.Message.Contains("The postcode entered appears to be incorrect."))
-                            {
-                                litError.InnerHtml = "The postcode was not found in East Sussex. Please check the postcode and try again.";
-                            }
-                            else
-                            {
-                                litError.InnerHtml = _helper.Message + " ";
-                                litError.InnerHtml += _helper.Description;
-                            }
-
-                            litError.InnerHtml = FormatException(litError.InnerHtml);
-                            litError.Visible = true;
-
-                            // hide paging controls and repeater if an error occurs
-                            TogglePaging(false);
-                        }
                     }
                 }
             }
-        }
-
-        protected override void OnPreRender(EventArgs e)
-        {
+   
             if (_error400)
             {
                 this.related.Visible = false;
@@ -181,38 +169,13 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
                 // bind data
                 rptResults.DataSource = dv;
                 rptResults.DataBind();
-
-                // write paging navigation
-                TogglePaging(true);
             }
             else
             {
-                TogglePaging(false);
                 litError.InnerHtml = FormatException("No sites were found matching your criteria.");
                 litError.Visible = true;
             }
         }
-
-        /// <summary>
-        /// Sets paging visibility
-        /// </summary>
-        /// <param name="togVal">boolean. true = on, false = off.</param>
-        private void TogglePaging(bool togVal)
-        {
-            if (!togVal)
-            {
-                pagingTop.Visible = false;
-                pagingBottom.Visible = false;
-                rptResults.Visible = false;
-            }
-            else
-            {
-                pagingTop.Visible = true;
-                pagingBottom.Visible = true;
-                rptResults.Visible = true;
-            }
-        }
-
 
         #region Read site data from CMS
         /// <summary>

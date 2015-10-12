@@ -39,7 +39,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
             {
                 url += "&acceptsWaste=" + HttpUtility.UrlEncode(_wasteType);
             }
-            var absoluteUrl = Iri.MakeAbsolute(new Uri(url, UriKind.RelativeOrAbsolute));
+            var absoluteUrl = Iri.MakeAbsolute(new Uri(url, UriKind.RelativeOrAbsolute), new Uri(Uri.UriSchemeHttps + "://" + HttpContext.Current.Request.Url.Authority + HttpContext.Current.Request.Url.AbsolutePath));
             var request = XmlHttpRequest.Create(absoluteUrl);
 #if DEBUG
             // Turn off SSL check in debug mode as it will always fail against a self-signed certificate used for development

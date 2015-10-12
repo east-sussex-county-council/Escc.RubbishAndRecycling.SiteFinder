@@ -5,6 +5,7 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.Services.Protocols;
 using System.Xml;
 using System.Xml.XPath;
@@ -39,9 +40,10 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
                     _wasteType = Request.QueryString["type"];
                         
                     // Check for old wording and redirect rather than error
-                    if (_wasteType == "All waste types") 
+                    if (_wasteType == "All waste types")
                     {
-                        Http.Status301MovedPermanently(new Uri("default.aspx?postcode=" + _postCode + "&type=Anything", UriKind.Relative));
+                        var redirectTo = new Uri("default.aspx?postcode=" + _postCode + "&type=Anything", UriKind.Relative);
+                        Http.Status301MovedPermanently(Iri.MakeAbsolute(redirectTo, new Uri(Uri.UriSchemeHttps + "://" + HttpContext.Current.Request.Url.Authority + HttpContext.Current.Request.Url.AbsolutePath)));
                     }
 
                     var wasteTypes = new UmbracoWasteTypesDataSource();

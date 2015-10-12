@@ -60,7 +60,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
                 var redirectToUrl = new Uri(ConfigurationManager.AppSettings["RecyclingSiteFinderBaseUrl"] + "?postcode=" + HttpUtility.UrlEncode(Request.Form[this.postcode.UniqueID]) + "&type=" + Request.Form[this.wasteTypes.UniqueID], UriKind.RelativeOrAbsolute);
                 if (!IsSameQueryAgain(redirectToUrl))
                 {
-                    Http.Status303SeeOther(redirectToUrl);
+                    Http.Status303SeeOther(Iri.MakeAbsolute(redirectToUrl, new Uri(Uri.UriSchemeHttps + "://" + HttpContext.Current.Request.Url.Authority + HttpContext.Current.Request.Url.AbsolutePath)));
                 }
             }
         }

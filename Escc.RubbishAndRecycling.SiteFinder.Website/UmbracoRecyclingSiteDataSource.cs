@@ -4,8 +4,8 @@ using System.Configuration;
 using System.Data;
 using System.IO;
 using System.Web;
+using Escc.Net;
 using EsccWebTeam.Data.Web;
-using EsccWebTeam.Data.Xml;
 using Exceptionless.Json;
 
 namespace Escc.RubbishAndRecycling.SiteFinder.Website
@@ -40,7 +40,8 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
                 url += "&acceptsWaste=" + HttpUtility.UrlEncode(_wasteType);
             }
             var absoluteUrl = Iri.MakeAbsolute(new Uri(url, UriKind.RelativeOrAbsolute), new Uri(Uri.UriSchemeHttps + "://" + HttpContext.Current.Request.Url.Authority + HttpContext.Current.Request.Url.AbsolutePath));
-            var request = XmlHttpRequest.Create(absoluteUrl);
+            var client = new HttpRequestClient(new ConfigurationProxyProvider());
+            var request = client.CreateRequest(absoluteUrl);
 #if DEBUG
             // Turn off SSL check in debug mode as it will always fail against a self-signed certificate used for development
             request.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;

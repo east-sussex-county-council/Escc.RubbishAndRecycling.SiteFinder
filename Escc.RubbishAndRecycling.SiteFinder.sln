@@ -8,6 +8,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution items", "{DC1A2D4D-3C6E-4DAD-AB41-42787C31F9D0}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		app-install.cmd = app-install.cmd
+		app-install.ps1 = app-install.ps1
 		app-setup-dev.cmd = app-setup-dev.cmd
 		app-setup-dev.ps1 = app-setup-dev.ps1
 		LICENSE.md = LICENSE.md

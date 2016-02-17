@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Escc.RubbishAndRecycling.SiteFinder.Website", "Escc.RubbishAndRecycling.SiteFinder.Website\Escc.RubbishAndRecycling.SiteFinder.Website.csproj", "{5054390D-B725-4010-B603-B3520F869BB6}"
 EndProject
@@ -25,10 +25,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EsccWebTeam.HouseStyle", "..\Escc.HouseStyle\EsccWebTeam.HouseStyle.csproj", "{1C429378-DBF2-4AF7-88AC-C059AA163682}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EsccWebTeam.Data.ActiveDirectory", "..\Escc.Data.ActiveDirectory\EsccWebTeam.Data.ActiveDirectory.csproj", "{5F1BBB42-C1C6-4110-A3E4-720420A3C27D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EsccWebTeam.Cms", "..\Escc.Cms\EsccWebTeam.Cms.csproj", "{6710E9EE-DEAB-4569-ACE6-F10159D6D447}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Escc.Elibrary", "..\Escc.Elibrary\Escc.Elibrary.csproj", "{3D2240E0-D165-4C52-A97B-730542975D3A}"
 EndProject
 Project("{E09DD79A-4488-4AB9-8D3F-A7EEE78BF432}") = "Escc.RubbishAndRecycling.SiteFinder.NuGet", "Escc.RubbishAndRecycling.SiteFinder.NuGet\Escc.RubbishAndRecycling.SiteFinder.NuGet.nuproj", "{B4F97732-A853-4691-971D-8F041F4EDDE7}"
 EndProject
@@ -75,18 +71,6 @@ Global
 		{5F1BBB42-C1C6-4110-A3E4-720420A3C27D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5F1BBB42-C1C6-4110-A3E4-720420A3C27D}.UAT|Any CPU.ActiveCfg = Release|Any CPU
 		{5F1BBB42-C1C6-4110-A3E4-720420A3C27D}.UAT|Any CPU.Build.0 = Release|Any CPU
-		{6710E9EE-DEAB-4569-ACE6-F10159D6D447}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6710E9EE-DEAB-4569-ACE6-F10159D6D447}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6710E9EE-DEAB-4569-ACE6-F10159D6D447}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6710E9EE-DEAB-4569-ACE6-F10159D6D447}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6710E9EE-DEAB-4569-ACE6-F10159D6D447}.UAT|Any CPU.ActiveCfg = Release|Any CPU
-		{6710E9EE-DEAB-4569-ACE6-F10159D6D447}.UAT|Any CPU.Build.0 = Release|Any CPU
-		{3D2240E0-D165-4C52-A97B-730542975D3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3D2240E0-D165-4C52-A97B-730542975D3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3D2240E0-D165-4C52-A97B-730542975D3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3D2240E0-D165-4C52-A97B-730542975D3A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3D2240E0-D165-4C52-A97B-730542975D3A}.UAT|Any CPU.ActiveCfg = Release|Any CPU
-		{3D2240E0-D165-4C52-A97B-730542975D3A}.UAT|Any CPU.Build.0 = Release|Any CPU
 		{B4F97732-A853-4691-971D-8F041F4EDDE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B4F97732-A853-4691-971D-8F041F4EDDE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4F97732-A853-4691-971D-8F041F4EDDE7}.Release|Any CPU.ActiveCfg = Release|Any CPU

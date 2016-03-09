@@ -68,6 +68,12 @@ BackupApplication "$destinationFolder/$projectName" $backupFolder $comment
 robocopy $sourceFolder "$destinationFolder/$projectName" /MIR /IF *.aspx RecyclingSiteFinder.ascx *.dll /XD aspnet_client obj Properties
 
 TransformConfig "$sourceFolder\web.example.config" "$destinationFolder\$projectName\web.config" "$transformsFolder\$projectName\web.release.config"
+if (Test-Path "$transformsFolder\$projectName\web.$websiteName.config") {
+	# Transform to temp file to avoid file locking problem
+	TransformConfig "$destinationFolder\$projectName\web.config" "$destinationFolder\$projectName\web.temp.config" "$transformsFolder\$projectName\web.$websiteName.config"
+	copy "$destinationFolder\$projectName\web.temp.config" "$destinationFolder\$projectName\web.config"
+	del "$destinationFolder\$projectName\web.temp.config"
+}
 
 EnableDotNet40InIIS
 CreateApplicationPool "$projectName-$websiteName"

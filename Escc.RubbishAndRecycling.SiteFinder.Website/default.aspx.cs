@@ -3,7 +3,7 @@ using System;
 using System.Configuration;
 using System.Data;
 using System.Globalization;
-using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Services.Protocols;
@@ -116,7 +116,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         private static bool IsValidRecyclableItemType(string type, IWasteTypesDataSource wasteTypes)
         {
             var possibleTypes = wasteTypes.LoadWasteTypes();
-            return possibleTypes.Contains(type);
+            return possibleTypes.Contains(type, StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>

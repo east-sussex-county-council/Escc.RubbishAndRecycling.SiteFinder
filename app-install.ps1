@@ -78,9 +78,9 @@ if (Test-Path "$transformsFolder\$projectName\web.$websiteName.config") {
 EnableDotNet40InIIS
 CreateApplicationPool "$projectName-$websiteName"
 CheckSiteExistsBeforeAddingApplication $websiteName
-CreateVirtualDirectory $websiteName "environment" "$destinationFolder\_virtual"
-CreateVirtualDirectory $websiteName "environment/rubbishandrecycling" "$destinationFolder\_virtual"
-CreateVirtualDirectory $websiteName "environment/rubbishandrecycling/recyclingsites" "$destinationFolder\_virtual"
+CreateVirtualDirectory $websiteName "environment" "$destinationFolder\_virtual" true
+CreateVirtualDirectory $websiteName "environment/rubbishandrecycling" "$destinationFolder\_virtual" true
+CreateVirtualDirectory $websiteName "environment/rubbishandrecycling/recyclingsites" "$destinationFolder\_virtual" true
 CreateVirtualDirectory $websiteName "environment/rubbishandrecycling/recyclingsites/find" "$destinationFolder\$projectName" true "$projectName-$websiteName"
 CreateVirtualDirectory $websiteName "environment/rubbishandrecycling/recyclingsites/find/masterpages" "$destinationFolder\Escc.EastSussexGovUK\masterpages" true
 

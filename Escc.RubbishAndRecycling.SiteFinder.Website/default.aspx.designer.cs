@@ -55,7 +55,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::EsccWebTeam.NavigationControls.PagingController paging;
+        protected global::Escc.NavigationControls.WebForms.PagingController paging;
         
         /// <summary>
         /// pagingTop control.
@@ -64,7 +64,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::EsccWebTeam.NavigationControls.PagingBarControl pagingTop;
+        protected global::Escc.NavigationControls.WebForms.PagingBarControl pagingTop;
         
         /// <summary>
         /// rptResults control.
@@ -82,15 +82,6 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::EsccWebTeam.NavigationControls.PagingBarControl pagingBottom;
-        
-        /// <summary>
-        /// related control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EsccWebTeam.EastSussexGovUK.MasterPages.Controls.Related related;
+        protected global::Escc.NavigationControls.WebForms.PagingBarControl pagingBottom;
     }
 }

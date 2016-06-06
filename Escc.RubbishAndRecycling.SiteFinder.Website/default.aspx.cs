@@ -13,6 +13,7 @@ using Escc.Geo;
 using EsccWebTeam.Data.Web;
 using EsccWebTeam.EastSussexGovUK;
 using Escc.Exceptions.Soap;
+using EsccWebTeam.EastSussexGovUK.MasterPages;
 
 namespace Escc.RubbishAndRecycling.SiteFinder.Website
 {
@@ -25,6 +26,15 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         private string _postCode;
         private string _wasteType;
         private bool _error400 = true;
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            var skinnable = Master as BaseMasterPage;
+            if (skinnable != null)
+            {
+                skinnable.Skin = new CustomerFocusSkin(ViewSelector.CurrentViewIs(MasterPageFile));
+            }
+        }
 
         protected override void OnPreRender(EventArgs e)
         {
@@ -106,10 +116,6 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
                 }
             }
    
-            if (_error400)
-            {
-                this.related.Visible = false;
-            }
             base.OnPreRender(e);
         }
 

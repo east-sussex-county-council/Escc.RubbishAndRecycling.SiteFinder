@@ -8,48 +8,40 @@
 		DateCreated="2004-11-16"
 		LgslNumbers="534"
 		/>
-    <Client:Css runat="server" Files="FormsSmall" />
+    <Client:Css runat="server" Files="FormsSmall;ContentSmall" />
     <EastSussexGovUK:ContextContainer runat="server" Desktop="true">
-        <Client:Css runat="server" Files="FormsMedium" MediaConfiguration="Medium" />
-        <Client:Css runat="server" Files="FormsLarge" MediaConfiguration="Large" />
+        <Client:Css runat="server" Files="FormsMedium;ContentMedium" MediaConfiguration="Medium" />
+        <Client:Css runat="server" Files="FormsLarge;ContentLarge" MediaConfiguration="Large" />
     </EastSussexGovUK:ContextContainer>
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="content">
 <div class="article" id="container" runat="server">
 <article>
-        <div class="text">
+    <div class="content text-content">
         <h1>Find your nearest recycling site</h1>
 
-            <p ID="litError" Runat="server" visible="false"></p>
-            </div>
-    <uc1:FindNearestSiteSrch id="Srch" runat="server" DisplayTitle="false" />
+        <p ID="litError" Runat="server" visible="false"></p>
+        <uc1:FindNearestSiteSrch id="Srch" runat="server" DisplayTitle="false" />
       
-    <NavigationControls:PagingController id="paging" runat="server" ResultsTextSingular="result" ResultsTextPlural="results" />
-    <NavigationControls:PagingBarControl id="pagingTop" runat="server" PagingControllerId="paging" />
+        <NavigationControls:PagingController id="paging" runat="server" ResultsTextSingular="result" ResultsTextPlural="results" />
+        <NavigationControls:PagingBarControl id="pagingTop" runat="server" PagingControllerId="paging" />
 
-    <asp:Repeater id="rptResults" runat="server">
-        <ItemTemplate>
-		    <dl class="itemDetail">
-			    <dt>Name:</dt>
-			    <dd><%# "<a href=\"" + DataBinder.Eval(Container.DataItem, "URL").ToString() + "\">" + DataBinder.Eval(Container.DataItem, "Title") + "</a>" %></dd>
-			    <dt>Distance:</dt>
-			    <dd><%# DataBinder.Eval(Container.DataItem, "Miles") + " miles" %></dd>
-		    </dl>
-	    </ItemTemplate>
-    </asp:Repeater>
+        <asp:Repeater id="rptResults" runat="server">
+            <ItemTemplate>
+		        <dl class="itemDetail">
+			        <dt>Name:</dt>
+			        <dd><%# "<a href=\"" + DataBinder.Eval(Container.DataItem, "URL").ToString() + "\">" + DataBinder.Eval(Container.DataItem, "Title") + "</a>" %></dd>
+			        <dt>Distance:</dt>
+			        <dd><%# DataBinder.Eval(Container.DataItem, "Miles") + " miles" %></dd>
+		        </dl>
+	        </ItemTemplate>
+        </asp:Repeater>
 
-    <NavigationControls:PagingBarControl id="pagingBottom" runat="server" PagingControllerId="paging" />
+        <NavigationControls:PagingBarControl id="pagingBottom" runat="server" PagingControllerId="paging" />
 
-    <EastSussexGovUK:Related runat="server" id="related">
-        <PagesTemplate>
-	        <ul>
-	        <li><a href="/environment/rubbishandrecycling/recyclingsites/wastesites.htm">Household waste recycling sites &#8211; map</a></li>
-	        </ul>
-        </PagesTemplate>
-    </EastSussexGovUK:Related>
-
-    <EastSussexGovUK:Share runat="server" />
+        <EastSussexGovUK:Share runat="server" />
+    </div>
 </article>
 </div>
 </asp:Content>

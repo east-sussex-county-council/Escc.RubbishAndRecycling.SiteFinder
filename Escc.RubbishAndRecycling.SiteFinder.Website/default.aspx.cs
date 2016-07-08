@@ -10,9 +10,9 @@ using System.Web.Services.Protocols;
 using System.Xml;
 using System.Xml.XPath;
 using Escc.Geo;
-using EsccWebTeam.Data.Web;
 using EsccWebTeam.EastSussexGovUK;
 using Escc.Exceptions.Soap;
+using Escc.Web;
 using EsccWebTeam.EastSussexGovUK.MasterPages;
 
 namespace Escc.RubbishAndRecycling.SiteFinder.Website
@@ -53,7 +53,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
                     if (_wasteType == "All waste types")
                     {
                         var redirectTo = new Uri("default.aspx?postcode=" + _postCode + "&type=Anything", UriKind.Relative);
-                        Http.Status301MovedPermanently(Iri.MakeAbsolute(redirectTo, new Uri(Uri.UriSchemeHttps + "://" + HttpContext.Current.Request.Url.Authority + HttpContext.Current.Request.Url.AbsolutePath)));
+                        new HttpStatus().MovedPermanently(new Uri(new Uri(Uri.UriSchemeHttps + "://" + HttpContext.Current.Request.Url.Authority + HttpContext.Current.Request.Url.AbsolutePath), redirectTo));
                     }
 
                     var wasteTypes = new UmbracoWasteTypesDataSource();

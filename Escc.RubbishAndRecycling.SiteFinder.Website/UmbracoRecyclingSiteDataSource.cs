@@ -5,7 +5,6 @@ using System.Data;
 using System.IO;
 using System.Web;
 using Escc.Net;
-using EsccWebTeam.Data.Web;
 using Exceptionless.Json;
 
 namespace Escc.RubbishAndRecycling.SiteFinder.Website
@@ -39,7 +38,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
             {
                 url += "&acceptsWaste=" + HttpUtility.UrlEncode(_wasteType);
             }
-            var absoluteUrl = Iri.MakeAbsolute(new Uri(url, UriKind.RelativeOrAbsolute), new Uri(Uri.UriSchemeHttps + "://" + HttpContext.Current.Request.Url.Authority + HttpContext.Current.Request.Url.AbsolutePath));
+            var absoluteUrl = new Uri(new Uri(Uri.UriSchemeHttps + "://" + HttpContext.Current.Request.Url.Authority + HttpContext.Current.Request.Url.AbsolutePath), new Uri(url, UriKind.RelativeOrAbsolute));
             var client = new HttpRequestClient(new ConfigurationProxyProvider());
             var request = client.CreateRequest(absoluteUrl);
 #if DEBUG

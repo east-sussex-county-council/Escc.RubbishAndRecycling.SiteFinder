@@ -2,7 +2,7 @@ using System;
 using System.Configuration;
 using System.Web;
 using System.Web.UI.HtmlControls;
-using EsccWebTeam.Data.Web;
+using Escc.Web;
 using EsccWebTeam.EastSussexGovUK;
 
 namespace Escc.RubbishAndRecycling.SiteFinder.Website
@@ -60,7 +60,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
                 var redirectToUrl = new Uri(ConfigurationManager.AppSettings["RecyclingSiteFinderBaseUrl"] + "?postcode=" + HttpUtility.UrlEncode(Request.Form[this.postcode.UniqueID]) + "&type=" + Request.Form[this.wasteTypes.UniqueID], UriKind.RelativeOrAbsolute);
                 if (!IsSameQueryAgain(redirectToUrl))
                 {
-                    Http.Status303SeeOther(Iri.MakeAbsolute(redirectToUrl, new Uri(Uri.UriSchemeHttps + "://" + HttpContext.Current.Request.Url.Authority + HttpContext.Current.Request.Url.AbsolutePath)));
+                    new HttpStatus().SeeOther(new Uri(new Uri(Uri.UriSchemeHttps + "://" + HttpContext.Current.Request.Url.Authority + HttpContext.Current.Request.Url.AbsolutePath), redirectToUrl));
                 }
             }
         }

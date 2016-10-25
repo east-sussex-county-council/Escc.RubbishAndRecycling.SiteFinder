@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Escc.RubbishAndRecycling.SiteFinder.Website", "Escc.RubbishAndRecycling.SiteFinder.Website\Escc.RubbishAndRecycling.SiteFinder.Website.csproj", "{5054390D-B725-4010-B603-B3520F869BB6}"
 EndProject
@@ -15,8 +15,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution 
 		LICENSE.md = LICENSE.md
 		README.md = README.md
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EsccWebTeam.EastSussexGovUK", "..\Escc.EastSussexGovUK\Escc.EastSussexGovUK\EsccWebTeam.EastSussexGovUK.csproj", "{1426FEF0-23DC-4C23-AE15-67F2527BD741}"
 EndProject
 Project("{E09DD79A-4488-4AB9-8D3F-A7EEE78BF432}") = "Escc.RubbishAndRecycling.SiteFinder.NuGet", "Escc.RubbishAndRecycling.SiteFinder.NuGet\Escc.RubbishAndRecycling.SiteFinder.NuGet.nuproj", "{B4F97732-A853-4691-971D-8F041F4EDDE7}"
 EndProject
@@ -33,12 +31,6 @@ Global
 		{5054390D-B725-4010-B603-B3520F869BB6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5054390D-B725-4010-B603-B3520F869BB6}.UAT|Any CPU.ActiveCfg = Release|Any CPU
 		{5054390D-B725-4010-B603-B3520F869BB6}.UAT|Any CPU.Build.0 = Release|Any CPU
-		{1426FEF0-23DC-4C23-AE15-67F2527BD741}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1426FEF0-23DC-4C23-AE15-67F2527BD741}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1426FEF0-23DC-4C23-AE15-67F2527BD741}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1426FEF0-23DC-4C23-AE15-67F2527BD741}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1426FEF0-23DC-4C23-AE15-67F2527BD741}.UAT|Any CPU.ActiveCfg = Release|Any CPU
-		{1426FEF0-23DC-4C23-AE15-67F2527BD741}.UAT|Any CPU.Build.0 = Release|Any CPU
 		{B4F97732-A853-4691-971D-8F041F4EDDE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B4F97732-A853-4691-971D-8F041F4EDDE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4F97732-A853-4691-971D-8F041F4EDDE7}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -41,12 +41,49 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ClientDependency.Core, Version=1.9.9.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ClientDependency.1.9.9.2\lib\net45\ClientDependency.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Dapper, Version=1.40.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.1.42\lib\net45\Dapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EmbeddedResourceVirtualPathProvider, Version=1.0.5918.17881, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Escc.EmbeddedResourceVirtualPathProvider.1.0.0\lib\EmbeddedResourceVirtualPathProvider.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Escc.ActiveDirectory, Version=1.0.0.0, Culture=neutral, PublicKeyToken=06fad7304560ae6f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Escc.ActiveDirectory.1.0.0\lib\Escc.ActiveDirectory.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Escc.AddressAndPersonalDetails, Version=1.0.0.0, Culture=neutral, PublicKeyToken=06fad7304560ae6f, processorArchitecture=MSIL">
       <HintPath>..\packages\Escc.AddressAndPersonalDetails.2.0.0\lib\Escc.AddressAndPersonalDetails.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Escc.ClientDependencyFramework.WebForms">
-      <HintPath>..\packages\Escc.ClientDependencyFramework.WebForms.1.0.0\lib\Escc.ClientDependencyFramework.WebForms.dll</HintPath>
+    <Reference Include="Escc.AddressAndPersonalDetails.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=06fad7304560ae6f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Escc.AddressAndPersonalDetails.Controls.2.0.1\lib\Escc.AddressAndPersonalDetails.Controls.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Escc.ClientDependencyFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Escc.ClientDependencyFramework.1.0.8\lib\Escc.ClientDependencyFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Escc.ClientDependencyFramework.WebForms, Version=1.0.0.0, Culture=neutral, PublicKeyToken=06fad7304560ae6f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Escc.ClientDependencyFramework.WebForms.1.0.1\lib\Escc.ClientDependencyFramework.WebForms.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Escc.Dates, Version=1.0.0.0, Culture=neutral, PublicKeyToken=06fad7304560ae6f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Escc.Dates.2.0.1\lib\Escc.Dates.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Escc.EastSussexGovUK, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Escc.EastSussexGovUK.1.0.0\lib\Escc.EastSussexGovUK.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Escc.EastSussexGovUK.WebForms, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Escc.EastSussexGovUK.WebForms.1.0.0\lib\Escc.EastSussexGovUK.WebForms.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Escc.Exceptions.Soap">
       <HintPath>..\packages\Escc.Exceptions.Soap.1.0.0\lib\Escc.Exceptions.Soap.dll</HintPath>
@@ -66,8 +103,12 @@
       <HintPath>..\packages\Escc.Net.1.0.1\lib\Escc.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Escc.Redirects, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Escc.Redirects.1.1.0\lib\Escc.Redirects.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Escc.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=06fad7304560ae6f, processorArchitecture=MSIL">
-      <HintPath>..\packages\Escc.Web.1.0.0\lib\Escc.Web.dll</HintPath>
+      <HintPath>..\packages\Escc.Web.1.0.1\lib\Escc.Web.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Escc.Web.Metadata, Version=1.0.0.0, Culture=neutral, PublicKeyToken=06fad7304560ae6f, processorArchitecture=MSIL">
@@ -86,8 +127,12 @@
       <HintPath>..\packages\Exceptionless.Web.1.5.2121\lib\net45\Exceptionless.Web.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
@@ -122,6 +167,10 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebActivatorEx.2.1.0\lib\net40\WebActivatorEx.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="RecyclingSiteFinder.ascx" />
@@ -132,6 +181,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\EastSussexGovUK_WebForms.cs" />
     <Compile Include="FakePostcodeLookup.cs" />
     <Compile Include="FakeRecyclingSiteDataSource.cs" />
     <Compile Include="FakeWasteTypesDataSource.cs" />
@@ -158,12 +208,6 @@
     <Compile Include="default.aspx.designer.cs">
       <DependentUpon>default.aspx</DependentUpon>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Escc.EastSussexGovUK\Escc.EastSussexGovUK\EsccWebTeam.EastSussexGovUK.csproj">
-      <Project>{1426fef0-23dc-4c23-ae15-67f2527bd741}</Project>
-      <Name>EsccWebTeam.EastSussexGovUK</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

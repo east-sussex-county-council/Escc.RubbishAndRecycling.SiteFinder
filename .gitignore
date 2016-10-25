@@ -36,3 +36,4 @@ packages/
 *.xsx
 export.xml
 *.GhostDoc.xml
+App_Data

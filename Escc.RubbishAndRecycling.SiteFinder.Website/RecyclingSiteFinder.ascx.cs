@@ -3,7 +3,6 @@ using System.Configuration;
 using System.Web;
 using System.Web.UI.HtmlControls;
 using Escc.Web;
-using EsccWebTeam.EastSussexGovUK;
 
 namespace Escc.RubbishAndRecycling.SiteFinder.Website
 {
@@ -65,18 +64,17 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
             }
         }
 
-        private static bool IsSameQueryAgain(Uri redirectToUrl)
+        private bool IsSameQueryAgain(Uri redirectToUrl)
         {
             if (redirectToUrl == null) throw new ArgumentNullException("redirectToUrl");
 
-            var siteContext = new EastSussexGovUKContext();
             if (redirectToUrl.IsAbsoluteUri)
             {
-                return siteContext.RequestUrl.ToString() == redirectToUrl.ToString();
+                return Request.Url.ToString() == redirectToUrl.ToString();
             }
             else
             {
-                return siteContext.RequestUrl.PathAndQuery == redirectToUrl.ToString();                
+                return Request.Url.PathAndQuery == redirectToUrl.ToString();                
             }
         }
 

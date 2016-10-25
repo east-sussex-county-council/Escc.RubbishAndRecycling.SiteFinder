@@ -8,10 +8,10 @@
 		DateCreated="2004-11-16"
 		LgslNumbers="534"
 		/>
-    <Client:Css runat="server" Files="FormsSmall;ContentSmall" />
+    <ClientDependency:Css runat="server" Files="FormsSmall" />
     <EastSussexGovUK:ContextContainer runat="server" Desktop="true">
-        <Client:Css runat="server" Files="FormsMedium;ContentMedium" MediaConfiguration="Medium" />
-        <Client:Css runat="server" Files="FormsLarge;ContentLarge" MediaConfiguration="Large" />
+        <ClientDependency:Css runat="server" Files="FormsMedium" MediaConfiguration="Medium" />
+        <ClientDependency:Css runat="server" Files="FormsLarge" MediaConfiguration="Large" />
     </EastSussexGovUK:ContextContainer>
 </asp:Content>
 

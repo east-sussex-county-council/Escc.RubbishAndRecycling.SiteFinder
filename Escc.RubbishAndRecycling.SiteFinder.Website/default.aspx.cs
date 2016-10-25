@@ -9,11 +9,12 @@ using System.Web;
 using System.Web.Services.Protocols;
 using System.Xml;
 using System.Xml.XPath;
+using Escc.EastSussexGovUK.Skins;
+using Escc.EastSussexGovUK.Views;
+using Escc.EastSussexGovUK.WebForms;
 using Escc.Geo;
-using EsccWebTeam.EastSussexGovUK;
 using Escc.Exceptions.Soap;
 using Escc.Web;
-using EsccWebTeam.EastSussexGovUK.MasterPages;
 
 namespace Escc.RubbishAndRecycling.SiteFinder.Website
 {
@@ -59,7 +60,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
                     var wasteTypes = new UmbracoWasteTypesDataSource();
                     if (_wasteType != "Anything" && !IsValidRecyclableItemType(_wasteType, wasteTypes))
                     {
-                        EastSussexGovUKContext.HttpStatus400BadRequest(this.container);
+                        new HttpStatus().BadRequest(Response);
                         _error400 = true;
                         return;
                     }

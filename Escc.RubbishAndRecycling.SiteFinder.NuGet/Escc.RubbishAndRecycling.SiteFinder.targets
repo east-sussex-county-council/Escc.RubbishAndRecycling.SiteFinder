@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Escc_RubbishAndRecycling_SiteFinder_Views Include="$(MSBuildProjectDirectory)\..\packages\Escc.RubbishAndRecycling.SiteFinder.1.0.5\Content\Views\**\*.*"/>
+    <Escc_RubbishAndRecycling_SiteFinder_Views Include="$(MSBuildProjectDirectory)\..\packages\Escc.RubbishAndRecycling.SiteFinder.1.0.7\Content\Views\**\*.*"/>
   </ItemGroup>
 
   <Target Name="Escc_RubbishAndRecycling_SiteFinder_CopyFiles" BeforeTargets="PrepareForBuild">

@@ -5,7 +5,7 @@ Param(
   [Parameter(Mandatory=$True,HelpMessage="Where is the folder where applications are installed to? (required)")]
   [string]$destinationFolder,
   
-  [Parameter(Mandatory=$True,HelpMessage="Where is the folder where applications are backed up before being updated? (required)")]
+  [Parameter(HelpMessage="Where is the folder where applications are backed up before being updated?")]
   [string]$backupFolder,
 	
   [Parameter(Mandatory=$True,HelpMessage="Where are the XDT transforms for the *.example.config files? (required)")]
@@ -57,15 +57,15 @@ Example: C:\>set GIT_ORIGIN_URL=https://example-git-server.com/{0}"
 $projectName = "Escc.RubbishAndRecycling.SiteFinder.Website" 
 $sourceFolder = NormaliseFolderPath $sourceFolder "$PSScriptRoot\$projectName"
 $destinationFolder = NormaliseFolderPath $destinationFolder
-$destinationFolder = "$destinationFolder\$websiteName"
 $backupFolder = NormaliseFolderPath $backupFolder
+if (!$backupFolder) { $backupFolder = "$destinationFolder\backups" }
 $backupFolder = "$backupFolder\$websiteName"
+$destinationFolder = "$destinationFolder\$websiteName"
 $transformsFolder = NormaliseFolderPath $transformsFolder
 
-CheckApplicationExists $destinationFolder "Escc.EastSussexGovUK"
 BackupApplication "$destinationFolder/$projectName" $backupFolder $comment
 
-robocopy $sourceFolder "$destinationFolder/$projectName" /MIR /IF *.aspx RecyclingSiteFinder.ascx *.dll /XD aspnet_client obj Properties
+robocopy $sourceFolder "$destinationFolder/$projectName" /MIR /IF *.aspx RecyclingSiteFinder.ascx *.dll csc.* csi.* /XD aspnet_client obj Properties
 
 TransformConfig "$sourceFolder\web.example.config" "$destinationFolder\$projectName\web.config" "$transformsFolder\$projectName\web.release.config"
 if (Test-Path "$transformsFolder\$projectName\web.$websiteName.config") {

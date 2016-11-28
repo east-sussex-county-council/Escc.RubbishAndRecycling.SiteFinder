@@ -10,6 +10,14 @@ This tool relies on two external tools:
 
 Both of these are implemented as interfaces which can be replaced with alternative implementations.
 
+Results by distance are returned by a URL in the following format: 
+
+	https://hostname/default.aspx?postcode=AB12CD&type=Anything
+
+You can also request a list of sites without a postcode. This is intended for search engines to index the site pages:
+
+	https://hostname/default.aspx?type=Anything
+
 ## Development setup steps
 
 1. Install [NuBuild](https://github.com/bspell1/NuBuild)

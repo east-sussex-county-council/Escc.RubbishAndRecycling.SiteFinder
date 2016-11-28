@@ -28,6 +28,13 @@
         <NavigationControls:PagingBarControl id="pagingTop" runat="server" PagingControllerId="paging" />
 
         <asp:Repeater id="rptResults" runat="server">
+            <HeaderTemplate><ul></HeaderTemplate>
+            <ItemTemplate>
+		        <li><%# "<a href=\"" + DataBinder.Eval(Container.DataItem, "URL").ToString() + "\">" + DataBinder.Eval(Container.DataItem, "Title") + "</a>" %></li>
+	        </ItemTemplate>
+            <FooterTemplate></ul></FooterTemplate>
+        </asp:Repeater>
+        <asp:Repeater id="rptResultsByDistance" runat="server">
             <ItemTemplate>
 		        <dl class="itemDetail">
 			        <dt>Name:</dt>

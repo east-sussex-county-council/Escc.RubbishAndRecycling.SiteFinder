@@ -26,7 +26,6 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         private SoapExceptionWrapper _helper;
         private string _postCode;
         private string _wasteType;
-        private bool _error400 = true;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -43,7 +42,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
             // If this code runs at PageLoad we might look up some data then be redirected away and have to look up again.
 
             // Feed options from another page
-            if (!String.IsNullOrEmpty(Request.QueryString["postcode"]) && !String.IsNullOrEmpty(Request.QueryString["type"]))
+            if (!String.IsNullOrEmpty(Request.QueryString["type"]))
             {
                 try
                 {
@@ -61,7 +60,6 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
                     if (_wasteType != "Anything" && !IsValidRecyclableItemType(_wasteType, wasteTypes))
                     {
                         new HttpStatus().BadRequest(Response);
-                        _error400 = true;
                         return;
                     }
 
@@ -87,36 +85,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
                     litError.Visible = true;
                 }
             }
-            else
-            {
-                // check whether we are currently paging through results
-                if (_postCode != null & _wasteType != null)
-                {
-                    try
-                    {
-                        GetAndBindData();
-                    }
-                    catch (SoapException ex)
-                    {
-                        _helper = new SoapExceptionWrapper(ex);
 
-                        if (_helper.Message.Contains("The postcode entered could not be found.") ||
-                            _helper.Message.Contains("The postcode entered appears to be incorrect."))
-                        {
-                            litError.InnerHtml = "The postcode was not found in East Sussex. Please check the postcode and try again.";
-                        }
-                        else
-                        {
-                            litError.InnerHtml = _helper.Message + " ";
-                            litError.InnerHtml += _helper.Description;
-                        }
-
-                        litError.InnerHtml = FormatException(litError.InnerHtml);
-                        litError.Visible = true;
-                    }
-                }
-            }
-   
             base.OnPreRender(e);
         }
 
@@ -163,21 +132,54 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
             Int32 rad = (int)ConvertMilesToMetres(Convert.ToDouble(60));
 
             // call the appropriate method which returns a dataset
-            DataSet ds = GetNearestRecyclingSitesRadialFromCms(rad, _postCode);
-            // get a default view on the dataset which we can then sort 
-            DataView dv = ds.Tables[0].DefaultView;
-            
-            // sort by distance
-            dv.Sort = "Miles ASC";
+            DataSet ds = GetSiteData();
+            DataView dv;
+            if (_postCode != null)
+            {
+                ds = GetNearestRecyclingSitesRadialFromCms(ds, rad, _postCode);
+
+                // get a default view on the dataset which we can then sort 
+                dv = ds.Tables[0].DefaultView;
+
+                // sort by distance
+                dv.Sort = "Miles ASC";
+
+                paging.PageSize = 10;
+            }
+            else
+            {
+                // Searching without a postcode is simply a way to link to all sites for search engines to index them.
+                // Users can see this view, but are not expected to use it.
+
+                // get a default view on the dataset which we can then sort 
+                var dataToTrim = ds.Clone();
+                foreach (DataRow row in ds.Tables[0].Rows)
+                {
+                    dataToTrim.Tables[0].ImportRow(row);
+                }
+                dv = dataToTrim.Tables[0].DefaultView;
+
+                // sort by name
+                dv.Sort = "Title ASC";
+
+                paging.PageSize = 40;
+            }
 
             // set up paging	
             paging.TrimRows(dv);
 
             if (paging.TotalResults > 0)
             {
-                // bind data
-                rptResults.DataSource = dv;
-                rptResults.DataBind();
+                if (_postCode != null)
+                {
+                    rptResultsByDistance.DataSource = dv;
+                    rptResultsByDistance.DataBind();
+                }
+                else
+                {
+                    rptResults.DataSource = dv;
+                    rptResults.DataBind();
+                }
             }
             else
             {
@@ -188,25 +190,27 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
 
         #region Read site data from CMS
         /// <summary>
-        /// Returns recycling sites in East Sussex for a given postcode and distance. Returns results within a given radial area rather than a square. 
+        /// Returns recycling sites in East Sussex for a given postcode and distance. Returns results within a given radial area rather than a square.
         /// </summary>
-        /// <param name="dist">A distance, in metres, to build a 'circular' reference area from. Must not exceed 100000m.</param>	
+        /// <param name="dataSet">The data set.</param>
+        /// <param name="dist">A distance, in metres, to build a 'circular' reference area from. Must not exceed 100000m.</param>
         /// <param name="nearPostcode">A valid postcode.</param>
-        /// <returns>An ADO.net dataset.</returns>		
-        public DataSet GetNearestRecyclingSitesRadialFromCms(Double dist, string nearPostcode)
+        /// <returns>
+        /// An ADO.net dataset.
+        /// </returns>
+        public DataSet GetNearestRecyclingSitesRadialFromCms(DataSet dataSet, Double dist, string nearPostcode)
         {
-            DataSet dsCms = GetSiteData();
             DataSet results;
             var postcodeLookup = new PostcodeLookupWebService();
             var centreOfPostcode = postcodeLookup.CoordinatesAtCentreOfPostcode(nearPostcode);
             var distanceCalculator = new DistanceCalculator();
 
-            results = dsCms.Clone();
+            results = dataSet.Clone();
             Double radius = dist;
 
             // need to loop through each row pull out the easting and northing for the site and run it through a method which checks if the
             // site is within the chosen radius
-            foreach (DataRow dr in dsCms.Tables[0].Rows)
+            foreach (DataRow dr in dataSet.Tables[0].Rows)
             {
                 // missing live data will likely be null or empty string from the cms placeholder?
                 if (!String.IsNullOrWhiteSpace(dr["Latitude"].ToString()) || !String.IsNullOrWhiteSpace(dr["Longitude"].ToString()))
@@ -267,6 +271,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         private DataSet GetSiteData()
         {
             var cacheKey = "wastesitedata";
+            if (_postCode == null) cacheKey += "-no-postcode";
             if (_wasteType != "Anything") cacheKey += Regex.Replace(_wasteType, "[^A-Za-z]", String.Empty);
 
             DataSet dsCms = Cache.Get(cacheKey) as DataSet;

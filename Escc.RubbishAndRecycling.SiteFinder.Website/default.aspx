@@ -1,5 +1,6 @@
-<%@ Register TagPrefix="uc1" TagName="FindNearestSiteSrch" Src="RecyclingSiteFinder.ascx" %>
 <%@ Page language="c#" Codebehind="default.aspx.cs" AutoEventWireup="True" Inherits="Escc.RubbishAndRecycling.SiteFinder.Website.WasteSearch" %>
+<%@ Register TagPrefix="uc1" TagName="FindNearestSiteSrch" Src="RecyclingSiteFinder.ascx" %>
+<%@ Register TagPrefix="EastSussexGovUK" TagName="Share" src="~/share.ascx" %>
 
 <asp:Content runat="server" ContentPlaceHolderID="metadata">
 	<Metadata:MetadataControl id="headcontent" runat="server" 

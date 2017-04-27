@@ -14,6 +14,7 @@ using Escc.EastSussexGovUK.Views;
 using Escc.EastSussexGovUK.WebForms;
 using Escc.Geo;
 using Escc.Exceptions.Soap;
+using Escc.Net;
 using Escc.Web;
 
 namespace Escc.RubbishAndRecycling.SiteFinder.Website
@@ -133,18 +134,21 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
 
             // call the appropriate method which returns a dataset
             DataSet ds = GetSiteData();
-            DataView dv;
+            DataView dv = null;
             if (_postCode != null)
             {
                 ds = GetNearestRecyclingSitesRadialFromCms(ds, rad, _postCode);
 
-                // get a default view on the dataset which we can then sort 
-                dv = ds.Tables[0].DefaultView;
+                if (ds != null)
+                {
+                    // get a default view on the dataset which we can then sort 
+                    dv = ds.Tables[0].DefaultView;
 
-                // sort by distance
-                dv.Sort = "Miles ASC";
+                    // sort by distance
+                    dv.Sort = "Miles ASC";
 
-                paging.PageSize = 10;
+                    paging.PageSize = 10;
+                }
             }
             else
             {
@@ -166,7 +170,10 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
             }
 
             // set up paging	
-            paging.TrimRows(dv);
+            if (dv != null)
+            {
+                paging.TrimRows(dv);
+            }
 
             if (paging.TotalResults > 0)
             {
@@ -201,8 +208,9 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         public DataSet GetNearestRecyclingSitesRadialFromCms(DataSet dataSet, Double dist, string nearPostcode)
         {
             DataSet results;
-            var postcodeLookup = new PostcodeLookupWebService();
+            var postcodeLookup = new LocateApiPostcodeLookup(new Uri(ConfigurationManager.AppSettings["LocateApiAuthorityUrl"]), ConfigurationManager.AppSettings["LocateApiToken"], new ConfigurationProxyProvider());
             var centreOfPostcode = postcodeLookup.CoordinatesAtCentreOfPostcode(nearPostcode);
+            if (centreOfPostcode == null) return null;
             var distanceCalculator = new DistanceCalculator();
 
             results = dataSet.Clone();

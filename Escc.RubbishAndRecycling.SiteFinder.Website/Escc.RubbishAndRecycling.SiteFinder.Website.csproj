@@ -197,7 +197,8 @@
     <Compile Include="IPostcodeLookup.cs" />
     <Compile Include="IRecyclingSiteDataSource.cs" />
     <Compile Include="IWasteTypesDataSource.cs" />
-    <Compile Include="PostcodeLookupWebService.cs" />
+    <Compile Include="LocateApiPostcodeLookup.cs" />
+    <Compile Include="LocateApiResult.cs" />
     <Compile Include="RecyclingSiteDataFormat.cs" />
     <Compile Include="RecyclingSiteFinder.ascx.cs">
       <DependentUpon>RecyclingSiteFinder.ascx</DependentUpon>
@@ -219,7 +220,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Web.config.transform" />
     <None Include="Web.example.config" />
   </ItemGroup>
   <PropertyGroup>

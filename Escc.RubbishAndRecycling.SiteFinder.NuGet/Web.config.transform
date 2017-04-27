@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0"?>
 <configuration>
   <appSettings>
+    <add key="LocateApiToken" value=""/>
+    <add key="LocateApiAuthorityUrl" value="https://hostname/locate/authority?postcode={0}"/>
     <add key="RecyclingSiteFinderBaseUrl" value="https://hostname/default.aspx"/>
     <add key="RecyclingSiteDataUrl" value="https://hostname/umbraco/api/location/list?type=RecyclingSite"/>
     <add key="WasteTypesDataUrl" value="https://hostname/umbraco/api/wastetypes/list"/>

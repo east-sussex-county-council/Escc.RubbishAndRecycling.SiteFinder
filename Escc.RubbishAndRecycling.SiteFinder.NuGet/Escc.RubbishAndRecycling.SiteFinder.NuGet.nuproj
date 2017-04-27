@@ -27,6 +27,9 @@
     <Content Include="Escc.RubbishAndRecycling.SiteFinder.targets">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Web.config.transform">
+      <SubType>Content</SubType>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\NuBuild\v1\NuBuild.targets" />
 </Project>

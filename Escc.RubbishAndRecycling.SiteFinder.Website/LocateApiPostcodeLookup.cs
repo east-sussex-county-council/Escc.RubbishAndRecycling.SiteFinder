@@ -44,6 +44,9 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         /// <exception cref="System.NotImplementedException"></exception>
         public LatitudeLongitude CoordinatesAtCentreOfPostcode(string postcode)
         {
+            var query = Regex.Replace(postcode, "[^A-Za-z0-9]", String.Empty);
+            if (String.IsNullOrEmpty(query)) return null;
+
             try
             {
                 using (var client = new WebClient())
@@ -54,7 +57,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
                     }
                     client.Headers.Add("Authorization", "Bearer " + _authenticationToken);
 
-                    var queryUrl = String.Format(_locateApiUrl.ToString(), Regex.Replace(postcode, "[^A-Za-z0-9]", String.Empty));
+                    var queryUrl = String.Format(_locateApiUrl.ToString(), query);
 
                     using (var stream = new StreamReader(client.OpenRead(queryUrl)))
                     {

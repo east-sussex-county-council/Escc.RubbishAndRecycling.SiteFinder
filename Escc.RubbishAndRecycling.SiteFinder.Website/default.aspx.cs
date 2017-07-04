@@ -16,6 +16,7 @@ using Escc.Geo;
 using Escc.Exceptions.Soap;
 using Escc.Net;
 using Escc.Web;
+using System.IO;
 
 namespace Escc.RubbishAndRecycling.SiteFinder.Website
 {
@@ -30,6 +31,12 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            // Ensure there's one version of this URL so that the data is consistent in Google Analytics
+            if (Path.GetFileName(Request.RawUrl).ToUpperInvariant().StartsWith("DEFAULT.ASPX"))
+            {
+                new HttpStatus().MovedPermanently(ResolveUrl("~/"));
+            }
+
             var skinnable = Master as BaseMasterPage;
             if (skinnable != null)
             {
@@ -53,7 +60,8 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
                     // Check for old wording and redirect rather than error
                     if (_wasteType == "All waste types")
                     {
-                        var redirectTo = new Uri("default.aspx?postcode=" + _postCode + "&type=Anything", UriKind.Relative);
+                        var thisPage = ResolveUrl("~/");
+                        var redirectTo = new Uri(thisPage + "?postcode=" + _postCode + "&type=Anything", UriKind.Relative);
                         new HttpStatus().MovedPermanently(new Uri(new Uri(Uri.UriSchemeHttps + "://" + HttpContext.Current.Request.Url.Authority + HttpContext.Current.Request.Url.AbsolutePath), redirectTo));
                     }
 

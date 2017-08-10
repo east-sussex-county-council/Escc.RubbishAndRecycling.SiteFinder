@@ -34,7 +34,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
             // Ensure there's one version of this URL so that the data is consistent in Google Analytics
             if (Path.GetFileName(Request.RawUrl).ToUpperInvariant().StartsWith("DEFAULT.ASPX"))
             {
-                new HttpStatus().MovedPermanently(ResolveUrl("~/"));
+                new HttpStatus().MovedPermanently(ResolveUrl("~/" + Request.Url.Query));
             }
 
             var skinnable = Master as BaseMasterPage;
@@ -178,6 +178,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
             }
 
             // set up paging	
+            paging.PageName = ResolveUrl("~/");
             if (dv != null)
             {
                 paging.TrimRows(dv);

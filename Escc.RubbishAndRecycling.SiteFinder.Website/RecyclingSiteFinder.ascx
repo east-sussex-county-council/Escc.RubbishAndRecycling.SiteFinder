@@ -8,7 +8,8 @@
     </div>
     <div class="formPart">
         <asp:Label CssClass="formLabel" AssociatedControlID="postcode" runat="server">Near postcode</asp:Label>
-        <asp:TextBox ID="postcode" runat="server" CssClass="postcode"></asp:TextBox>
+        <asp:TextBox ID="postcode" runat="server" CssClass="postcode describedby-tip" aria-describedby="postcode-help" data-tip-positions="right"></asp:TextBox>
+        <p id="postcode-help">We won't keep or share your postcode.</p>
     </div>
     <asp:Button ID="Go" Text="Find your nearest" CssClass="button" runat="server" />
 </div>

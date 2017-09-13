@@ -37,3 +37,4 @@ packages/
 export.xml
 *.GhostDoc.xml
 App_Data
+.vs

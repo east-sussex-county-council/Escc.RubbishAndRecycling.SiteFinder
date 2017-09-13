@@ -9,11 +9,12 @@
 		DateCreated="2004-11-16"
 		LgslNumbers="534"
 		/>
-    <ClientDependency:Css runat="server" Files="FormsSmall" />
     <EastSussexGovUK:ContextContainer runat="server" Desktop="true">
+        <ClientDependency:Css runat="server" Files="FormsSmall" />
         <ClientDependency:Css runat="server" Files="FormsMedium" MediaConfiguration="Medium" />
         <ClientDependency:Css runat="server" Files="FormsLarge" MediaConfiguration="Large" />
     </EastSussexGovUK:ContextContainer>
+    <ClientDependency:Script runat="server" Files="Tips;DescribedByTips" />
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="content">

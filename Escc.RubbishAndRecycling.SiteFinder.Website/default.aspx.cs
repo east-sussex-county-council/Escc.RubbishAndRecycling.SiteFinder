@@ -56,6 +56,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
                 {
                     _postCode = Request.QueryString["postcode"];
                     _wasteType = Request.QueryString["type"];
+                    _wasteType = _wasteType.Replace("â€“", "–"); // Using Response.AddHeader() with an ndash in the URL does a bad conversion of the Unicode character, so convert it back
                         
                     // Check for old wording and redirect rather than error
                     if (_wasteType == "All waste types")

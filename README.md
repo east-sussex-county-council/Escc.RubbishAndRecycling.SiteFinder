@@ -46,7 +46,6 @@ This project also includes a NuGet package of the search form, which is designed
 
 ## Development setup steps
 
-1. Install [NuBuild](https://github.com/bspell1/NuBuild)
-2. From an Administrator command prompt, run `app-setup-dev.cmd` to set up a site in IIS.
-3. Build the solution
-9. In `~\web.config` uncomment and complete the `Proxy` section, and update the three URLs for the web service, library data API and mobile library times page.
+1. From an Administrator command prompt, run `app-setup-dev.cmd` to set up a site in IIS.
+2. Build the solution
+3. In `~\web.config` uncomment and complete the `Proxy` section, and update the details for the locate API and the recycling sites API.

@@ -27,6 +27,12 @@
 
         @if (Model.RecyclingSites != null && Model.RecyclingSites.Count > 0)
         {
+            <div class="latest">
+                <p>
+                    You can take some things to recycling points instead. They may be nearer to you or open longer.
+                    Check <a href="https://www.recyclenow.com/local-recycling">Recycle Now</a> for details.
+                </p>
+            </div>
             foreach (DataRowView row in Model.RecyclingSites)
             {
                 <dl class="itemDetail">

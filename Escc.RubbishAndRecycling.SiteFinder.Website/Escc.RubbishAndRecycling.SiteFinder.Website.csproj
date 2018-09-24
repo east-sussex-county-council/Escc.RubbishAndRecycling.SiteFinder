@@ -230,9 +230,9 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="TopicSection_RecyclingSiteFinder.ascx" />
-    <Content Include="Escc.RubbishAndRecycling.SiteFinder.nuspec" />
-    <Content Include="Escc.RubbishAndRecycling.SiteFinder.targets" />
-    <Content Include="build-nuget.cmd" />
+    <None Include="Escc.RubbishAndRecycling.SiteFinder.nuspec" />
+    <None Include="Escc.RubbishAndRecycling.SiteFinder.targets" />
+    <None Include="build-nuget.cmd" />
     <Content Include="RecyclingSiteFinder_Mvc.ascx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -276,7 +276,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <Content Include="Web.config.transform" />
+    <None Include="Web.config.transform" />
     <Content Include="Views\web.config" />
     <Content Include="Views\Default\Index.cshtml" />
     <None Include="Web.example.config" />

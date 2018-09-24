@@ -1,0 +1,45 @@
+﻿@using Escc.RubbishAndRecycling.SiteFinder.Website
+@model RecyclingViewModel
+@using ClientDependency.Core.Mvc
+@using Escc.ClientDependencyFramework
+@using System.Data
+@{
+    Model.Metadata.Title = "Find your nearest recycling site";
+    Model.Metadata.DateCreated = "2004-11-16";
+    Model.Metadata.IpsvPreferredTerms = "Recycling (waste)";
+    Model.Metadata.LgslNumbers = "534";
+
+    Html.RequiresCss(CssFileAlias.Resolve("FormsSmall"));
+    Html.RequiresCss(CssFileAlias.Resolve("FormsMedium"), MediaQueryAlias.Resolve("Medium"));
+    Html.RequiresCss(CssFileAlias.Resolve("FormsLarge"), MediaQueryAlias.Resolve("Large"));
+    Html.RequiresJs(JsFileAlias.Resolve("Tips"), 50);
+    Html.RequiresJs(JsFileAlias.Resolve("DescribedByTips"));
+}
+
+<article class="full-page">
+    <div class="content text-content">
+        <h1>Find your nearest recycling site</h1>
+        @if ((Model.RecyclingSites == null || Model.RecyclingSites.Count == 0) && !String.IsNullOrEmpty(Request.QueryString["postcode"]))
+        {
+            <div class="errorSummary"><ul class="validationSummary"><li>No sites were found matching your criteria.</li></ul></div>
+        }
+        @{ Html.RenderPartial("~/RecyclingSiteFinder_Mvc.ascx"); }
+
+        @if (Model.RecyclingSites != null && Model.RecyclingSites.Count > 0)
+        {
+            foreach (DataRowView row in Model.RecyclingSites)
+            {
+                <dl class="itemDetail">
+                    <dt>Name:</dt>
+                    <dd><a href="@row["URL"].ToString()">@row["Title"].ToString()</a></dd>
+                    @if (!String.IsNullOrEmpty(Request.QueryString["postcode"]))
+                    {
+                    <dt>Distance:</dt>
+                    <dd>@row["Miles"].ToString() miles</dd>
+                    }
+                </dl>
+            }
+        }
+        @{ Html.RenderPartial("~/Views/EastSussexGovUK/Features/_Share.cshtml", Model); }
+    </div>
+</article>

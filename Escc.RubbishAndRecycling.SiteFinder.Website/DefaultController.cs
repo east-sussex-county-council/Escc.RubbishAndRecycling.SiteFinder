@@ -1,123 +1,70 @@
-
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Globalization;
-using System.Linq;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Web;
-using System.Web.Services.Protocols;
-using System.Xml;
-using System.Xml.XPath;
-using Escc.EastSussexGovUK.Skins;
-using Escc.EastSussexGovUK.Views;
-using Escc.EastSussexGovUK.WebForms;
+using System.Web.Caching;
+using System.Web.Mvc;
 using Escc.Geo;
-using Escc.Exceptions.Soap;
 using Escc.Net;
 using Escc.Web;
-using System.IO;
 
 namespace Escc.RubbishAndRecycling.SiteFinder.Website
 {
-    /// <summary>
-    /// Search results for waste and recycling sites
-    /// </summary>
-    public partial class WasteSearch : System.Web.UI.Page
+    public class DefaultController : Controller
     {
-        private SoapExceptionWrapper _helper;
         private string _postCode;
         private string _wasteType;
 
-        protected void Page_Load(object sender, EventArgs e)
+        // GET: Default
+        public ActionResult Index()
         {
+            var model = new RecyclingViewModel();
+
             // Ensure there's one version of this URL so that the data is consistent in Google Analytics
-            if (Path.GetFileName(Request.RawUrl).ToUpperInvariant().StartsWith("DEFAULT.ASPX"))
+            if (Path.GetFileName(Request.RawUrl).ToUpperInvariant() == "DEFAULT.ASPX")
             {
-                new HttpStatus().MovedPermanently(ResolveUrl("~/" + Request.Url.Query));
+                new HttpStatus().MovedPermanently(Url.Content("~/"));
             }
-
-            var skinnable = Master as BaseMasterPage;
-            if (skinnable != null)
-            {
-                skinnable.Skin = new CustomerFocusSkin(ViewSelector.CurrentViewIs(MasterPageFile));
-            }
-        }
-
-        protected override void OnPreRender(EventArgs e)
-        {
-            // Load data at PreRender event so that RecyclingSiteFinder.ascx has a chance to redirect before any unnecessary lookups are done.
-            // If this code runs at PageLoad we might look up some data then be redirected away and have to look up again.
 
             // Feed options from another page
             if (!String.IsNullOrEmpty(Request.QueryString["type"]))
             {
-                try
+                _postCode = Request.QueryString["postcode"];
+                _wasteType = Request.QueryString["type"];
+                _wasteType = _wasteType.Replace("â€“", "–"); // Using Response.AddHeader() with an ndash in the URL does a bad conversion of the Unicode character, so convert it back
+
+                // Check for old wording and redirect rather than error
+                if (_wasteType == "All waste types")
                 {
-                    _postCode = Request.QueryString["postcode"];
-                    _wasteType = Request.QueryString["type"];
-                    _wasteType = _wasteType.Replace("–", "�"); // Using Response.AddHeader() with an ndash in the URL does a bad conversion of the Unicode character, so convert it back
-                        
-                    // Check for old wording and redirect rather than error
-                    if (_wasteType == "All waste types")
-                    {
-                        var thisPage = ResolveUrl("~/");
-                        var redirectTo = new Uri(thisPage + "?postcode=" + _postCode + "&type=Anything", UriKind.Relative);
-                        new HttpStatus().MovedPermanently(new Uri(new Uri(Uri.UriSchemeHttps + "://" + HttpContext.Current.Request.Url.Authority + HttpContext.Current.Request.Url.AbsolutePath), redirectTo));
-                    }
-
-                    var wasteTypes = new UmbracoWasteTypesDataSource();
-                    if (_wasteType != "Anything" && !IsValidRecyclableItemType(_wasteType, wasteTypes))
-                    {
-                        new HttpStatus().BadRequest(Response);
-                        return;
-                    }
-
-                    GetAndBindData();
+                    var thisPage = Url.Content("~/");
+                    var redirectTo = new Uri(thisPage + "?postcode=" + _postCode + "&type=Anything", UriKind.Relative);
+                    new HttpStatus().MovedPermanently(new Uri(new Uri(Uri.UriSchemeHttps + "://" + Request.Url.Authority + Request.Url.AbsolutePath), redirectTo));
                 }
-                catch (SoapException ex)
+
+                var wasteTypes = new UmbracoWasteTypesDataSource();
+                if (_wasteType != "Anything" && !IsValidRecyclableItemType(_wasteType, wasteTypes))
                 {
-
-                    _helper = new SoapExceptionWrapper(ex);
-
-                    if (_helper.Message.Contains("The postcode entered could not be found.") ||
-                        _helper.Message.Contains("The postcode entered appears to be incorrect."))
-                    {
-                        litError.InnerHtml = "The postcode was not found in East Sussex. Please check the postcode and try again.";
-                    }
-                    else
-                    {
-                        litError.InnerHtml = _helper.Message + " ";
-                        litError.InnerHtml += _helper.Description;
-                    }
-
-                    litError.InnerHtml = FormatException(litError.InnerHtml);
-                    litError.Visible = true;
+                    new HttpStatus().BadRequest(Response);
+                }
+                else
+                {
+                    model.RecyclingSites = GetAndBindData();
                 }
             }
 
-            base.OnPreRender(e);
+            return View(model);
         }
 
         private static bool IsValidRecyclableItemType(string type, IWasteTypesDataSource wasteTypes)
         {
             var possibleTypes = wasteTypes.LoadWasteTypes();
-            return possibleTypes.Contains(type, StringComparer.OrdinalIgnoreCase);
+            return possibleTypes.Contains(type);
         }
-
-        /// <summary>
-        /// Creates a bullet point error message
-        /// </summary>
-        /// <param name="message">string</param>
-        /// <returns>string</returns>
-        private static string FormatException(string message)
-        {
-            string startTags = "<div class=\"errorSummary\"><ul class=\"validationSummary\"><li>";
-            string endTags = "</li></ul></div>";
-            message = startTags + message + endTags;
-            return message;
-        }
-
+        
         /// <summary>
         /// Simple function for converting miles to metres.
         /// </summary>
@@ -133,11 +80,8 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         /// Called from Page_Load and uses the values from the postcode textbox and the waste type and radial distance drop downs.
         /// The list is sorted in order of ascending distance and filtered on waste type if a type has been selected by the user.
         /// </summary>
-        private void GetAndBindData()
+        private DataView GetAndBindData()
         {
-            //clear any error messages
-            litError.InnerHtml = string.Empty;
-
             // need to convert miles to metres 
             Int32 rad = (int)ConvertMilesToMetres(Convert.ToDouble(60));
 
@@ -155,8 +99,6 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
 
                     // sort by distance
                     dv.Sort = "Miles ASC";
-
-                    paging.PageSize = 10;
                 }
             }
             else
@@ -174,38 +116,11 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
 
                 // sort by name
                 dv.Sort = "Title ASC";
-
-                paging.PageSize = 40;
             }
 
-            // set up paging	
-            paging.PageName = ResolveUrl("~/");
-            if (dv != null)
-            {
-                paging.TrimRows(dv);
-            }
-
-            if (paging.TotalResults > 0)
-            {
-                if (_postCode != null)
-                {
-                    rptResultsByDistance.DataSource = dv;
-                    rptResultsByDistance.DataBind();
-                }
-                else
-                {
-                    rptResults.DataSource = dv;
-                    rptResults.DataBind();
-                }
-            }
-            else
-            {
-                litError.InnerHtml = FormatException("No sites were found matching your criteria.");
-                litError.Visible = true;
-            }
+            return dv;
         }
 
-        #region Read site data from CMS
         /// <summary>
         /// Returns recycling sites in East Sussex for a given postcode and distance. Returns results within a given radial area rather than a square.
         /// </summary>
@@ -241,7 +156,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
                     {
                         results.Tables[0].ImportRow(dr);
                     }
-                }                   
+                }
             }
             return GenerateDistances(results, centreOfPostcode, distanceCalculator);
         }
@@ -292,11 +207,11 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
             if (_postCode == null) cacheKey += "-no-postcode";
             if (_wasteType != "Anything") cacheKey += Regex.Replace(_wasteType, "[^A-Za-z]", String.Empty);
 
-            DataSet dsCms = Cache.Get(cacheKey) as DataSet;
+            DataSet dsCms = HttpContext.Cache.Get(cacheKey) as DataSet;
             if (dsCms == null)
             {
                 dsCms = DataSetFromCms();
-                Cache.Insert(cacheKey, dsCms, null, DateTime.Now.AddHours(1), System.Web.Caching.Cache.NoSlidingExpiration);
+                HttpContext.Cache.Insert(cacheKey, dsCms, null, DateTime.Now.AddHours(1), System.Web.Caching.Cache.NoSlidingExpiration);
             }
             return dsCms;
         }
@@ -315,7 +230,5 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
                 return ds;
             }
         }
-        #endregion
-
     }
 }

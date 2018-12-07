@@ -5,12 +5,9 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Web;
-using System.Web.Caching;
 using System.Web.Mvc;
 using Escc.Geo;
 using Escc.Net;
-using Escc.Web;
 
 namespace Escc.RubbishAndRecycling.SiteFinder.Website
 {
@@ -27,7 +24,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
             // Ensure there's one version of this URL so that the data is consistent in Google Analytics
             if (Path.GetFileName(Request.RawUrl).ToUpperInvariant() == "DEFAULT.ASPX")
             {
-                new HttpStatus().MovedPermanently(Url.Content("~/"));
+                return new RedirectResult(new Uri(Request.Url, Url.Content("~/")).ToString(), true);
             }
 
             // Feed options from another page
@@ -42,13 +39,13 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
                 {
                     var thisPage = Url.Content("~/");
                     var redirectTo = new Uri(thisPage + "?postcode=" + _postCode + "&type=Anything", UriKind.Relative);
-                    new HttpStatus().MovedPermanently(new Uri(new Uri(Uri.UriSchemeHttps + "://" + Request.Url.Authority + Request.Url.AbsolutePath), redirectTo));
+                    return new RedirectResult(new Uri(new Uri(Uri.UriSchemeHttps + "://" + Request.Url.Authority + Request.Url.AbsolutePath), redirectTo).ToString(), true);
                 }
 
                 var wasteTypes = new UmbracoWasteTypesDataSource();
                 if (_wasteType != "Anything" && !IsValidRecyclableItemType(_wasteType, wasteTypes))
                 {
-                    new HttpStatus().BadRequest(Response);
+                    return new HttpStatusCodeResult(400);
                 }
                 else
                 {

@@ -5,7 +5,8 @@ using System.Data;
 using System.IO;
 using System.Web;
 using Escc.Net;
-using Exceptionless.Json;
+using Escc.Net.Configuration;
+using Newtonsoft.Json;
 
 namespace Escc.RubbishAndRecycling.SiteFinder.Website
 {

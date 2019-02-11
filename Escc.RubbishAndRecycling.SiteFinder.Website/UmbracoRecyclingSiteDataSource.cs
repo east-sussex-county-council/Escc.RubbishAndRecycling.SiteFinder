@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
-using System.IO;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using Escc.Net;
-using Escc.Net.Configuration;
 using Newtonsoft.Json;
 
 namespace Escc.RubbishAndRecycling.SiteFinder.Website
@@ -15,55 +14,57 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
     /// </summary>
     public class UmbracoRecyclingSiteDataSource : IRecyclingSiteDataSource
     {
+        private Uri _recyclingSiteDataUrl;
         private readonly string _wasteType;
+        private readonly IProxyProvider _proxyProvider;
+        private static HttpClient _httpClient;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UmbracoRecyclingSiteDataSource"/> class.
         /// </summary>
+        /// <param name="recyclingSiteDataUrl">The URL to connect to for recycling site data</param>
         /// <param name="wasteType">Type of the waste.</param>
-        public UmbracoRecyclingSiteDataSource(string wasteType)
+        /// <param name="proxyProvider">A method of getting the proxy for connecting to the data source</param>
+        public UmbracoRecyclingSiteDataSource(Uri recyclingSiteDataUrl, string wasteType, IProxyProvider proxyProvider)
         {
+            _recyclingSiteDataUrl = recyclingSiteDataUrl ?? throw new ArgumentNullException(nameof(recyclingSiteDataUrl));
             _wasteType = wasteType;
+            _proxyProvider = proxyProvider;
         }
 
-        public void AddRecyclingSites(DataTable table)
+        /// <summary>
+        /// Gets recycling site data and adds it to the data table
+        /// </summary>
+        /// <param name="table"></param>
+        /// <returns></returns>
+        public async Task AddRecyclingSites(DataTable table)
         {
             if (table == null) throw new ArgumentNullException("table");
-            if (String.IsNullOrEmpty(ConfigurationManager.AppSettings["RecyclingSiteDataUrl"]))
-            {
-                throw new ConfigurationErrorsException("appSettings/RecyclingSiteDataUrl setting not found");
-            }
-
-            var url = ConfigurationManager.AppSettings["RecyclingSiteDataUrl"];
+            
             if (!String.IsNullOrEmpty(_wasteType))
             {
-                url += "&acceptsWaste=" + HttpUtility.UrlEncode(_wasteType);
+                _recyclingSiteDataUrl = new Uri(_recyclingSiteDataUrl.ToString() +  "&acceptsWaste=" + HttpUtility.UrlEncode(_wasteType));
             }
-            var absoluteUrl = new Uri(new Uri(Uri.UriSchemeHttps + "://" + HttpContext.Current.Request.Url.Authority + HttpContext.Current.Request.Url.AbsolutePath), new Uri(url, UriKind.RelativeOrAbsolute));
-            var client = new HttpRequestClient(new ConfigurationProxyProvider());
-            var request = client.CreateRequest(absoluteUrl);
-#if DEBUG
-            // Turn off SSL check in debug mode as it will always fail against a self-signed certificate used for development
-            request.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
-#endif
-            using (var response = request.GetResponse())
+
+            if (_httpClient == null)
             {
-                using (var reader = new StreamReader(response.GetResponseStream()))
+                _httpClient = new HttpClient(new HttpClientHandler()
                 {
-                    var json = reader.ReadToEnd();
+                    Proxy = _proxyProvider?.CreateProxy()
+                });
+            }
+            var json = await _httpClient.GetStringAsync(_recyclingSiteDataUrl);
 
-                    var locations = JsonConvert.DeserializeObject<List<LocationApiResult>>(json);
+            var locations = JsonConvert.DeserializeObject<List<LocationApiResult>>(json);
 
-                    foreach (var location in locations)
-                    {
-                        var row = table.NewRow();
-                        row["Title"] = location.Name;
-                        row["URL"] = location.Url;
-                        row["Latitude"] = location.Latitude;
-                        row["Longitude"] = location.Longitude;
-                        table.Rows.Add(row);
-                    }
-                }
+            foreach (var location in locations)
+            {
+                var row = table.NewRow();
+                row["Title"] = location.Name;
+                row["URL"] = location.Url;
+                row["Latitude"] = location.Latitude;
+                row["Longitude"] = location.Longitude;
+                table.Rows.Add(row);
             }
         }
     }

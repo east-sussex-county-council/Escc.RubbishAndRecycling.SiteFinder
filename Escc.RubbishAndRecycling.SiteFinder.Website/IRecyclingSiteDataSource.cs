@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Threading.Tasks;
 
 namespace Escc.RubbishAndRecycling.SiteFinder.Website
 {
@@ -11,6 +12,6 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         /// Adds the recycling sites from the data source.
         /// </summary>
         /// <param name="table">The table.</param>
-        void AddRecyclingSites(DataTable table);
+        Task AddRecyclingSites(DataTable table);
     }
 }

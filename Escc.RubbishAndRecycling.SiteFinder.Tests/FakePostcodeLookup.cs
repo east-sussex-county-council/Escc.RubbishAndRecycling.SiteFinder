@@ -1,4 +1,5 @@
-﻿using Escc.Geo;
+﻿using System.Threading.Tasks;
+using Escc.Geo;
 
 namespace Escc.RubbishAndRecycling.SiteFinder.Website
 {
@@ -7,9 +8,9 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
     /// </summary>
     public class FakePostcodeLookup : IPostcodeLookup
     {
-        public LatitudeLongitude CoordinatesAtCentreOfPostcode(string postcode)
+        public Task<LatitudeLongitude> CoordinatesAtCentreOfPostcodeAsync(string postcode)
         {
-            return new LatitudeLongitude(50.872066, 0.0010903126);
+            return Task.FromResult(new LatitudeLongitude(50.872066, 0.0010903126));
         }
     }
 }

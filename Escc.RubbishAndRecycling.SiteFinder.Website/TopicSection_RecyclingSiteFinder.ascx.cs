@@ -1,7 +1,9 @@
 using System;
 using System.Configuration;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI.HtmlControls;
+using Escc.Net.Configuration;
 using Escc.Web;
 
 namespace Escc.RubbishAndRecycling.SiteFinder.Website
@@ -85,10 +87,17 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         /// </summary>
         private void PopulateWasteTypes()
         {
+            if (String.IsNullOrEmpty(ConfigurationManager.AppSettings["WasteTypesDataUrl"]))
+            {
+                throw new ConfigurationErrorsException("appSettings/WasteTypesDataUrl setting not found");
+            }
 
-            var wasteTypesData = new UmbracoWasteTypesDataSource();
+            var url = ConfigurationManager.AppSettings["WasteTypesDataUrl"];
+            var absoluteUrl = new Uri(new Uri(Uri.UriSchemeHttps + "://" + HttpContext.Current.Request.Url.Authority + HttpContext.Current.Request.Url.AbsolutePath), new Uri(url, UriKind.RelativeOrAbsolute));
 
-            this.wasteTypes.DataSource = wasteTypesData.LoadWasteTypes();
+            var wasteTypesData = new UmbracoWasteTypesDataSource(absoluteUrl, new ConfigurationProxyProvider());
+
+            this.wasteTypes.DataSource = wasteTypesData.LoadWasteTypes().Result;
             this.wasteTypes.DataBind();
             this.wasteTypes.Items.Insert(0, "Anything");
         }

@@ -5,10 +5,13 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Web.Mvc;
+using Escc.EastSussexGovUK.Mvc;
 using Escc.Geo;
 using Escc.Net;
 using Escc.Net.Configuration;
+using Exceptionless;
 
 namespace Escc.RubbishAndRecycling.SiteFinder.Website
 {
@@ -18,7 +21,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         private string _wasteType;
 
         // GET: Default
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
             var model = new RecyclingViewModel();
 
@@ -43,23 +46,43 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
                     return new RedirectResult(new Uri(new Uri(Uri.UriSchemeHttps + "://" + Request.Url.Authority + Request.Url.AbsolutePath), redirectTo).ToString(), true);
                 }
 
-                var wasteTypes = new UmbracoWasteTypesDataSource();
-                if (_wasteType != "Anything" && !IsValidRecyclableItemType(_wasteType, wasteTypes))
+                var wasteTypes = new UmbracoWasteTypesDataSource(ReadUrlFromConfig("WasteTypesDataUrl"), new ConfigurationProxyProvider());
+                if (_wasteType != "Anything" && !(await IsValidRecyclableItemType(_wasteType, wasteTypes)))
                 {
                     return new HttpStatusCodeResult(400);
                 }
                 else
                 {
-                    model.RecyclingSites = GetAndBindData();
+                    model.RecyclingSites = await GetAndBindData();
                 }
+            }
+
+            var templateRequest = new EastSussexGovUKTemplateRequest(Request);
+            try
+            {
+                model.WebChat = await templateRequest.RequestWebChatSettingsAsync();
+            }
+            catch (Exception ex)
+            {
+                // Catch and report exceptions - don't throw them and cause the page to fail
+                ex.ToExceptionless().Submit();
+            }
+            try
+            {
+                model.TemplateHtml = await templateRequest.RequestTemplateHtmlAsync();
+            }
+            catch (Exception ex)
+            {
+                // Catch and report exceptions - don't throw them and cause the page to fail
+                ex.ToExceptionless().Submit();
             }
 
             return View(model);
         }
 
-        private static bool IsValidRecyclableItemType(string type, IWasteTypesDataSource wasteTypes)
+        private async static Task<bool> IsValidRecyclableItemType(string type, IWasteTypesDataSource wasteTypes)
         {
-            var possibleTypes = wasteTypes.LoadWasteTypes();
+            var possibleTypes = await wasteTypes.LoadWasteTypes();
             return possibleTypes.Contains(type);
         }
         
@@ -78,17 +101,17 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         /// Called from Page_Load and uses the values from the postcode textbox and the waste type and radial distance drop downs.
         /// The list is sorted in order of ascending distance and filtered on waste type if a type has been selected by the user.
         /// </summary>
-        private DataView GetAndBindData()
+        private async Task<DataView> GetAndBindData()
         {
             // need to convert miles to metres 
             Int32 rad = (int)ConvertMilesToMetres(Convert.ToDouble(60));
 
             // call the appropriate method which returns a dataset
-            DataSet ds = GetSiteData();
+            DataSet ds = await GetSiteData();
             DataView dv = null;
             if (_postCode != null)
             {
-                ds = GetNearestRecyclingSitesRadialFromCms(ds, rad, _postCode);
+                ds = await GetNearestRecyclingSitesRadialFromCms(ds, rad, _postCode);
 
                 if (ds != null)
                 {
@@ -128,11 +151,11 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         /// <returns>
         /// An ADO.net dataset.
         /// </returns>
-        public DataSet GetNearestRecyclingSitesRadialFromCms(DataSet dataSet, Double dist, string nearPostcode)
+        public async Task<DataSet> GetNearestRecyclingSitesRadialFromCms(DataSet dataSet, Double dist, string nearPostcode)
         {
             DataSet results;
             var postcodeLookup = new LocateApiPostcodeLookup(new Uri(ConfigurationManager.AppSettings["LocateApiAuthorityUrl"]), ConfigurationManager.AppSettings["LocateApiToken"], new ConfigurationProxyProvider());
-            var centreOfPostcode = postcodeLookup.CoordinatesAtCentreOfPostcode(nearPostcode);
+            var centreOfPostcode = await postcodeLookup.CoordinatesAtCentreOfPostcodeAsync(nearPostcode);
             if (centreOfPostcode == null) return null;
             var distanceCalculator = new DistanceCalculator();
 
@@ -199,7 +222,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         /// The method which calls the CM Server web service.
         /// </seealso>
         /// <returns>An ADO.net DataSet.</returns>
-        private DataSet GetSiteData()
+        private async Task<DataSet> GetSiteData()
         {
             var cacheKey = "wastesitedata";
             if (_postCode == null) cacheKey += "-no-postcode";
@@ -208,7 +231,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
             DataSet dsCms = HttpContext.Cache.Get(cacheKey) as DataSet;
             if (dsCms == null)
             {
-                dsCms = DataSetFromCms();
+                dsCms = await DataSetFromCms();
                 HttpContext.Cache.Insert(cacheKey, dsCms, null, DateTime.Now.AddHours(1), System.Web.Caching.Cache.NoSlidingExpiration);
             }
             return dsCms;
@@ -218,15 +241,30 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         /// Extracts placeholder content and uses this to create a dataset.
         /// </summary>
         /// <returns>DataSet of all household waste and recycling centres.</returns>
-        public DataSet DataSetFromCms()
+        public async Task<DataSet> DataSetFromCms()
         {
             using (var ds = RecyclingSiteDataFormat.CreateDataSet())
             {
                 // apply filtering if a specific waste type has been selected by the user
-                new UmbracoRecyclingSiteDataSource(_wasteType != "Anything" ? _wasteType : String.Empty).AddRecyclingSites(ds.Tables[0]);
+                Uri absoluteUrl = ReadUrlFromConfig("RecyclingSiteDataUrl");
+
+                var dataSource = new UmbracoRecyclingSiteDataSource(absoluteUrl, _wasteType != "Anything" ? _wasteType : String.Empty, new ConfigurationProxyProvider());
+                await dataSource.AddRecyclingSites(ds.Tables[0]);
                 ds.AcceptChanges();
                 return ds;
             }
+        }
+
+        private Uri ReadUrlFromConfig(string setting)
+        {
+            if (String.IsNullOrEmpty(ConfigurationManager.AppSettings[setting]))
+            {
+                throw new ConfigurationErrorsException($"appSettings/{setting} setting not found");
+            }
+
+            var url = ConfigurationManager.AppSettings[setting];
+            var absoluteUrl = new Uri(new Uri(Uri.UriSchemeHttps + "://" + Request.Url.Authority + Request.Url.AbsolutePath), new Uri(url, UriKind.RelativeOrAbsolute));
+            return absoluteUrl;
         }
     }
 }

@@ -3,42 +3,50 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.IO;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using Escc.Net;
-using Escc.Net.Configuration;
 using Newtonsoft.Json;
 
 namespace Escc.RubbishAndRecycling.SiteFinder.Website
 {
     /// <summary>
-    /// Gets waste types data from an Umbraco installation using an API defined in the Escc.CustomerFocusTemplates.Website project
+    /// Gets waste types data from an Umbraco installation using an API defined in the Escc.EastSussexGovUK.Umbraco.Web project
     /// </summary>
     public class UmbracoWasteTypesDataSource : IWasteTypesDataSource
     {
-        public IList<string> LoadWasteTypes()
+        private readonly Uri _wasteTypesDataUrl;
+        private readonly IProxyProvider _proxyProvider;
+        private static HttpClient _httpClient;
+
+        /// <summary>
+        /// Creates a new instance of <see cref="UmbracoWasteTypesDataSource"/>
+        /// </summary>
+        /// <param name="wasteTypesDataUrl"></param>
+        /// <param name="proxyProvider"></param>
+        public UmbracoWasteTypesDataSource(Uri wasteTypesDataUrl, IProxyProvider proxyProvider)
         {
-            if (String.IsNullOrEmpty(ConfigurationManager.AppSettings["WasteTypesDataUrl"]))
-            {
-                throw new ConfigurationErrorsException("appSettings/WasteTypesDataUrl setting not found");
-            }
+            _wasteTypesDataUrl = wasteTypesDataUrl ?? throw new ArgumentNullException(nameof(wasteTypesDataUrl));
+            _proxyProvider = proxyProvider;
+        }
 
-            var url = ConfigurationManager.AppSettings["WasteTypesDataUrl"];
-            var absoluteUrl = new Uri(new Uri(Uri.UriSchemeHttps + "://" + HttpContext.Current.Request.Url.Authority + HttpContext.Current.Request.Url.AbsolutePath), new Uri(url, UriKind.RelativeOrAbsolute));
-            var client = new HttpRequestClient(new ConfigurationProxyProvider());
-            var request = client.CreateRequest(absoluteUrl);
-#if DEBUG
-            // Turn off SSL check in debug mode as it will always fail against a self-signed certificate used for development
-            request.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
-#endif
-            using (var response = request.GetResponse())
+        /// <summary>
+        /// Gets the waste types from an Umbraco API
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IList<string>> LoadWasteTypes()
+        {
+            if (_httpClient == null)
             {
-                using (var reader = new StreamReader(response.GetResponseStream()))
+                _httpClient = new HttpClient(new HttpClientHandler()
+
                 {
-                    var json = reader.ReadToEnd();
-
-                    return JsonConvert.DeserializeObject<List<string>>(json);
-                }
+                    Proxy = _proxyProvider?.CreateProxy()
+                });
             }
+            var json = await _httpClient.GetStringAsync(_wasteTypesDataUrl).ConfigureAwait(false);
+            return JsonConvert.DeserializeObject<List<string>>(json);
         }
 
     }

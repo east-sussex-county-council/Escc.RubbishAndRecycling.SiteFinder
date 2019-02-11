@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace Escc.RubbishAndRecycling.SiteFinder.Website
 {
     public class FakeRecyclingSiteDataSource : IRecyclingSiteDataSource
     {
-        public void AddRecyclingSites(DataTable table)
+        public Task AddRecyclingSites(DataTable table)
         {
             if (table == null) throw new ArgumentNullException("table");
 
@@ -29,6 +30,8 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
             crowborough["Latitude"] = "51.058695";
             crowborough["Longitude"] = "0.158844";
             table.Rows.Add(crowborough);
+
+            return null;
         }
     }
 }

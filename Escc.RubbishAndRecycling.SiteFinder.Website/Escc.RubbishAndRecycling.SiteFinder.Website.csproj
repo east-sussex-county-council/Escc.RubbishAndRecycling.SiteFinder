@@ -221,7 +221,6 @@
     <None Include="Escc.RubbishAndRecycling.SiteFinder.nuspec" />
     <None Include="Escc.RubbishAndRecycling.SiteFinder.targets" />
     <None Include="build-nuget.cmd" />
-    <Content Include="RecyclingSiteFinder_Mvc.ascx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -248,13 +247,6 @@
       <DependentUpon>TopicSection_RecyclingSiteFinder.ascx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RecyclingSiteFinder_Mvc.ascx.cs">
-      <DependentUpon>RecyclingSiteFinder_Mvc.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="RecyclingSiteFinder_Mvc.ascx.designer.cs">
-      <DependentUpon>RecyclingSiteFinder_Mvc.ascx</DependentUpon>
-    </Compile>
     <Compile Include="RecyclingViewModel.cs" />
     <Compile Include="UmbracoWasteTypesDataSource.cs" />
     <Compile Include="UmbracoRecyclingSiteDataSource.cs" />
@@ -262,6 +254,7 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Content Include="Views\web.config" />
+    <Content Include="Views\Shared\_RecyclingSiteFinder.cshtml" />
     <None Include="Web.config.transform" />
     <Content Include="Views\Default\Index.cshtml" />
     <None Include="Web.example.config" />

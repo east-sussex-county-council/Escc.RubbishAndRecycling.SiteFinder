@@ -1,0 +1,32 @@
+﻿@model Escc.RubbishAndRecycling.SiteFinder.Website.RecyclingViewModel
+@using System.Configuration
+<form method="GET" action="@ConfigurationManager.AppSettings["RecyclingSiteFinderBaseUrl"]">
+    <div class="form short-form">
+@if (!String.IsNullOrEmpty(Model.SearchFormTitle)) {<h2>@Model.SearchFormTitle</h2>}
+        <div class="formPart">
+            <label class="formLabel" for="type">I need to recycle</label>
+            <select id="type" name="type" class="formControl">
+                @if (Model.WasteTypes != null)
+                {
+                    foreach (var wasteType in Model.WasteTypes)
+                    {
+                        if (wasteType == Model.Type)
+                        {
+                            <option selected="selected">@wasteType</option>
+                        }
+                        else
+                        {
+                            <option>@wasteType</option>
+                        }
+                    }
+                }
+            </select>
+        </div>
+        <div class="formPart">
+            <label class="formLabel" for="postcode">Near postcode</label>
+            <input type="text" id="postcode" name="postcode" class="postcode describedby-tip" aria-describedby="postcode-help" data-tip-positions="right" value="@Model.Postcode" />
+            <p id="postcode-help">We won't keep or share your postcode.</p>
+        </div>
+        <input type="submit" value="Find your nearest" />
+    </div>
+</form>

@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web;
+using Escc.EastSussexGovUK;
 using Escc.Net;
 using Newtonsoft.Json;
 
@@ -18,6 +15,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
     {
         private readonly Uri _wasteTypesDataUrl;
         private readonly IProxyProvider _proxyProvider;
+        private readonly ICacheStrategy<List<string>> _cacheStrategy;
         private static HttpClient _httpClient;
 
         /// <summary>
@@ -25,10 +23,12 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         /// </summary>
         /// <param name="wasteTypesDataUrl"></param>
         /// <param name="proxyProvider"></param>
-        public UmbracoWasteTypesDataSource(Uri wasteTypesDataUrl, IProxyProvider proxyProvider)
+        /// <param name="cacheStrategy">A method of caching the list of waste types</param>
+        public UmbracoWasteTypesDataSource(Uri wasteTypesDataUrl, IProxyProvider proxyProvider, ICacheStrategy<List<string>> cacheStrategy)
         {
             _wasteTypesDataUrl = wasteTypesDataUrl ?? throw new ArgumentNullException(nameof(wasteTypesDataUrl));
             _proxyProvider = proxyProvider;
+            _cacheStrategy = cacheStrategy;
         }
 
         /// <summary>
@@ -37,6 +37,12 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         /// <returns></returns>
         public async Task<IList<string>> LoadWasteTypes()
         {
+            if (_cacheStrategy != null)
+            {
+                var cachedWasteTypes = _cacheStrategy.ReadFromCache(this.ToString());
+                if (cachedWasteTypes != null) return cachedWasteTypes;
+            }
+
             if (_httpClient == null)
             {
                 _httpClient = new HttpClient(new HttpClientHandler()
@@ -46,7 +52,15 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
                 });
             }
             var json = await _httpClient.GetStringAsync(_wasteTypesDataUrl).ConfigureAwait(false);
-            return JsonConvert.DeserializeObject<List<string>>(json);
+            var wasteTypes = JsonConvert.DeserializeObject<List<string>>(json);
+            wasteTypes.Insert(0, "Anything");
+
+            if (_cacheStrategy != null)
+            {
+                _cacheStrategy.AddToCache(this.ToString(), wasteTypes);
+            }
+
+            return wasteTypes;
         }
 
     }

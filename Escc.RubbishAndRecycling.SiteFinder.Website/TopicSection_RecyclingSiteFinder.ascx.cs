@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI.HtmlControls;
+using Escc.EastSussexGovUK;
 using Escc.Net.Configuration;
 using Escc.Web;
 
@@ -95,11 +97,10 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
             var url = ConfigurationManager.AppSettings["WasteTypesDataUrl"];
             var absoluteUrl = new Uri(new Uri(Uri.UriSchemeHttps + "://" + HttpContext.Current.Request.Url.Authority + HttpContext.Current.Request.Url.AbsolutePath), new Uri(url, UriKind.RelativeOrAbsolute));
 
-            var wasteTypesData = new UmbracoWasteTypesDataSource(absoluteUrl, new ConfigurationProxyProvider());
+            var wasteTypesData = new UmbracoWasteTypesDataSource(absoluteUrl, new ConfigurationProxyProvider(), new ApplicationCacheStrategy<List<string>>(TimeSpan.FromDays(1)));
 
             this.wasteTypes.DataSource = wasteTypesData.LoadWasteTypes().Result;
             this.wasteTypes.DataBind();
-            this.wasteTypes.Items.Insert(0, "Anything");
         }
     }
 }

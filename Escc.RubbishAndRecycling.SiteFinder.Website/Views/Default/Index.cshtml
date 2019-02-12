@@ -23,7 +23,7 @@
         {
             <div class="errorSummary"><ul class="validationSummary"><li>No sites were found matching your criteria.</li></ul></div>
         }
-        @{ Html.RenderPartial("~/RecyclingSiteFinder_Mvc.ascx"); }
+        @{ Html.RenderPartial("~/Views/Shared/_RecyclingSiteFinder.cshtml"); }
 
         @if (Model.RecyclingSites != null && Model.RecyclingSites.Count > 0)
         {

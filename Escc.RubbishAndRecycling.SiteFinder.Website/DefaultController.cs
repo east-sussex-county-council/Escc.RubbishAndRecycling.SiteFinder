@@ -7,6 +7,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Escc.EastSussexGovUK;
 using Escc.EastSussexGovUK.Mvc;
 using Escc.Geo;
 using Escc.Net;
@@ -21,15 +22,17 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         private string _wasteType;
 
         // GET: Default
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(RecyclingViewModel model)
         {
-            var model = new RecyclingViewModel();
-
             // Ensure there's one version of this URL so that the data is consistent in Google Analytics
             if (Path.GetFileName(Request.RawUrl).ToUpperInvariant() == "DEFAULT.ASPX")
             {
                 return new RedirectResult(new Uri(Request.Url, Url.Content("~/")).ToString(), true);
             }
+
+            // Get the waste types
+            var wasteTypesDataSource = new UmbracoWasteTypesDataSource(ReadUrlFromConfig("WasteTypesDataUrl"), new ConfigurationProxyProvider(), new ApplicationCacheStrategy<List<string>>(TimeSpan.FromDays(1)));
+            model.WasteTypes = await wasteTypesDataSource.LoadWasteTypes();
 
             // Feed options from another page
             if (!String.IsNullOrEmpty(Request.QueryString["type"]))
@@ -46,8 +49,8 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
                     return new RedirectResult(new Uri(new Uri(Uri.UriSchemeHttps + "://" + Request.Url.Authority + Request.Url.AbsolutePath), redirectTo).ToString(), true);
                 }
 
-                var wasteTypes = new UmbracoWasteTypesDataSource(ReadUrlFromConfig("WasteTypesDataUrl"), new ConfigurationProxyProvider());
-                if (_wasteType != "Anything" && !(await IsValidRecyclableItemType(_wasteType, wasteTypes)))
+                // Check for a valid waste type
+                if (_wasteType != "Anything" && !model.WasteTypes.Contains(_wasteType))
                 {
                     return new HttpStatusCodeResult(400);
                 }
@@ -80,12 +83,6 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
             return View(model);
         }
 
-        private async static Task<bool> IsValidRecyclableItemType(string type, IWasteTypesDataSource wasteTypes)
-        {
-            var possibleTypes = await wasteTypes.LoadWasteTypes();
-            return possibleTypes.Contains(type);
-        }
-        
         /// <summary>
         /// Simple function for converting miles to metres.
         /// </summary>

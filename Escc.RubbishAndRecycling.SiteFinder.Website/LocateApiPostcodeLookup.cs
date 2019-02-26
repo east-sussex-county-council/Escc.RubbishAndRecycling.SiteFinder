@@ -20,7 +20,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
     {
         private readonly Uri _locateApiUrl;
         private readonly string _authenticationToken;
-        private readonly IProxyProvider _proxyProvider;
+        private readonly IHttpClientProvider _httpClientProvider;
         private static HttpClient _httpClient;
 
         /// <summary>
@@ -28,16 +28,15 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         /// </summary>
         /// <param name="locateApiUrl">The locate API URL.</param>
         /// <param name="authenticationToken">The authentication token.</param>
-        /// <param name="proxyProvider">The proxy provider.</param>
+        /// <param name="httpClientProvider">A way to get a shared instance of an <see cref="HttpClient"/>.</param>
         /// <exception cref="System.ArgumentNullException">authenticationToken</exception>
-        public LocateApiPostcodeLookup(Uri locateApiUrl, string authenticationToken, IProxyProvider proxyProvider)
+        public LocateApiPostcodeLookup(Uri locateApiUrl, string authenticationToken, IHttpClientProvider httpClientProvider)
         {
-            if (locateApiUrl == null) throw new ArgumentNullException(nameof(locateApiUrl));
             if (String.IsNullOrEmpty(authenticationToken)) throw new ArgumentNullException(nameof(authenticationToken));
 
-            _locateApiUrl = locateApiUrl;
+            _locateApiUrl = locateApiUrl ?? throw new ArgumentNullException(nameof(locateApiUrl));
             _authenticationToken = authenticationToken;
-            _proxyProvider = proxyProvider;
+            _httpClientProvider = httpClientProvider ?? throw new ArgumentNullException(nameof(httpClientProvider));
         }
 
         /// <summary>
@@ -45,7 +44,6 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         /// </summary>
         /// <param name="postcode">The postcode.</param>
         /// <returns></returns>
-        /// <exception cref="System.NotImplementedException"></exception>
         public async Task<LatitudeLongitude> CoordinatesAtCentreOfPostcodeAsync(string postcode)
         {
             var query = Regex.Replace(postcode, "[^A-Za-z0-9]", String.Empty);
@@ -55,10 +53,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
             {
                 if (_httpClient == null)
                 {
-                    _httpClient = new HttpClient(new HttpClientHandler()
-                    {
-                        Proxy = _proxyProvider.CreateProxy(),
-                    });
+                    _httpClient = _httpClientProvider.GetHttpClient();
                     _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _authenticationToken);
                 }
 

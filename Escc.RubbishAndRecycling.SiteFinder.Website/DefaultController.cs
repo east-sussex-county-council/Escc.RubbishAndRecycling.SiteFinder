@@ -31,7 +31,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
             }
 
             // Get the waste types
-            var wasteTypesDataSource = new UmbracoWasteTypesDataSource(ReadUrlFromConfig("WasteTypesDataUrl"), new ConfigurationProxyProvider(), new ApplicationCacheStrategy<List<string>>(TimeSpan.FromDays(1)));
+            var wasteTypesDataSource = new UmbracoWasteTypesDataSource(ReadUrlFromConfig("WasteTypesDataUrl"), new HttpClientProvider(new ConfigurationProxyProvider()), new ApplicationCacheStrategy<List<string>>(TimeSpan.FromDays(1)));
             model.WasteTypes = await wasteTypesDataSource.LoadWasteTypes();
 
             // Feed options from another page
@@ -151,7 +151,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         public async Task<DataSet> GetNearestRecyclingSitesRadialFromCms(DataSet dataSet, Double dist, string nearPostcode)
         {
             DataSet results;
-            var postcodeLookup = new LocateApiPostcodeLookup(new Uri(ConfigurationManager.AppSettings["LocateApiAuthorityUrl"]), ConfigurationManager.AppSettings["LocateApiToken"], new ConfigurationProxyProvider());
+            var postcodeLookup = new LocateApiPostcodeLookup(new Uri(ConfigurationManager.AppSettings["LocateApiAuthorityUrl"]), ConfigurationManager.AppSettings["LocateApiToken"], new HttpClientProvider(new ConfigurationProxyProvider()));
             var centreOfPostcode = await postcodeLookup.CoordinatesAtCentreOfPostcodeAsync(nearPostcode);
             if (centreOfPostcode == null) return null;
             var distanceCalculator = new DistanceCalculator();
@@ -245,7 +245,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
                 // apply filtering if a specific waste type has been selected by the user
                 Uri absoluteUrl = ReadUrlFromConfig("RecyclingSiteDataUrl");
 
-                var dataSource = new UmbracoRecyclingSiteDataSource(absoluteUrl, _wasteType != "Anything" ? _wasteType : String.Empty, new ConfigurationProxyProvider());
+                var dataSource = new UmbracoRecyclingSiteDataSource(absoluteUrl, _wasteType != "Anything" ? _wasteType : String.Empty, new HttpClientProvider(new ConfigurationProxyProvider()));
                 await dataSource.AddRecyclingSites(ds.Tables[0]);
                 ds.AcceptChanges();
                 return ds;

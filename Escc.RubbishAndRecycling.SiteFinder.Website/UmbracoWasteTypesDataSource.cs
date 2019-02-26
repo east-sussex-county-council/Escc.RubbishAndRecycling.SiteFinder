@@ -14,7 +14,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
     public class UmbracoWasteTypesDataSource : IWasteTypesDataSource
     {
         private readonly Uri _wasteTypesDataUrl;
-        private readonly IProxyProvider _proxyProvider;
+        private readonly IHttpClientProvider _httpClientProvider;
         private readonly ICacheStrategy<List<string>> _cacheStrategy;
         private static HttpClient _httpClient;
 
@@ -22,12 +22,12 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         /// Creates a new instance of <see cref="UmbracoWasteTypesDataSource"/>
         /// </summary>
         /// <param name="wasteTypesDataUrl"></param>
-        /// <param name="proxyProvider"></param>
+        /// <param name="httpClientProvider"></param>
         /// <param name="cacheStrategy">A method of caching the list of waste types</param>
-        public UmbracoWasteTypesDataSource(Uri wasteTypesDataUrl, IProxyProvider proxyProvider, ICacheStrategy<List<string>> cacheStrategy)
+        public UmbracoWasteTypesDataSource(Uri wasteTypesDataUrl, IHttpClientProvider httpClientProvider, ICacheStrategy<List<string>> cacheStrategy)
         {
             _wasteTypesDataUrl = wasteTypesDataUrl ?? throw new ArgumentNullException(nameof(wasteTypesDataUrl));
-            _proxyProvider = proxyProvider;
+            _httpClientProvider = httpClientProvider ?? throw new ArgumentNullException(nameof(httpClientProvider));
             _cacheStrategy = cacheStrategy;
         }
 
@@ -45,11 +45,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
 
             if (_httpClient == null)
             {
-                _httpClient = new HttpClient(new HttpClientHandler()
-
-                {
-                    Proxy = _proxyProvider?.CreateProxy()
-                });
+                _httpClient = _httpClientProvider.GetHttpClient();
             }
             var json = await _httpClient.GetStringAsync(_wasteTypesDataUrl).ConfigureAwait(false);
             var wasteTypes = JsonConvert.DeserializeObject<List<string>>(json);

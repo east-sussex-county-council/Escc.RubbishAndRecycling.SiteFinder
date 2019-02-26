@@ -16,7 +16,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
     {
         private Uri _recyclingSiteDataUrl;
         private readonly string _wasteType;
-        private readonly IProxyProvider _proxyProvider;
+        private readonly IHttpClientProvider _httpClientProvider;
         private static HttpClient _httpClient;
 
         /// <summary>
@@ -24,12 +24,12 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
         /// </summary>
         /// <param name="recyclingSiteDataUrl">The URL to connect to for recycling site data</param>
         /// <param name="wasteType">Type of the waste.</param>
-        /// <param name="proxyProvider">A method of getting the proxy for connecting to the data source</param>
-        public UmbracoRecyclingSiteDataSource(Uri recyclingSiteDataUrl, string wasteType, IProxyProvider proxyProvider)
+        /// <param name="httpClientProvider">A method of getting the <see cref="HttpClient"/> for connecting to the data source</param>
+        public UmbracoRecyclingSiteDataSource(Uri recyclingSiteDataUrl, string wasteType, IHttpClientProvider httpClientProvider)
         {
             _recyclingSiteDataUrl = recyclingSiteDataUrl ?? throw new ArgumentNullException(nameof(recyclingSiteDataUrl));
             _wasteType = wasteType;
-            _proxyProvider = proxyProvider;
+            _httpClientProvider = httpClientProvider ?? throw new ArgumentNullException(nameof(httpClientProvider));
         }
 
         /// <summary>
@@ -48,10 +48,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
 
             if (_httpClient == null)
             {
-                _httpClient = new HttpClient(new HttpClientHandler()
-                {
-                    Proxy = _proxyProvider?.CreateProxy()
-                });
+                _httpClient = _httpClientProvider.GetHttpClient();
             }
             var json = await _httpClient.GetStringAsync(_recyclingSiteDataUrl);
 

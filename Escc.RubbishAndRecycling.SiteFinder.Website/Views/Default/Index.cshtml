@@ -5,9 +5,8 @@
 @using System.Data
 @{
     Model.Metadata.Title = "Find your nearest recycling site";
-    Model.Metadata.DateCreated = "2004-11-16";
-    Model.Metadata.IpsvPreferredTerms = "Recycling (waste)";
-    Model.Metadata.LgslNumbers = "534";
+    Model.Metadata.DateCreated = new DateTimeOffset(new DateTime(2004, 11, 16));
+    Model.Metadata.LocalGovernmentServices.Add(new Uri("http://id.esd.org.uk/service/534"));
 
     Html.RequiresCss(CssFileAlias.Resolve("FormsSmall"));
     Html.RequiresCss(CssFileAlias.Resolve("FormsMedium"), MediaQueryAlias.Resolve("Medium"));

@@ -31,7 +31,7 @@ namespace Escc.RubbishAndRecycling.SiteFinder.Website
             }
 
             // Get the waste types
-            var wasteTypesDataSource = new UmbracoWasteTypesDataSource(ReadUrlFromConfig("WasteTypesDataUrl"), new HttpClientProvider(new ConfigurationProxyProvider()), new ApplicationCacheStrategy<List<string>>(TimeSpan.FromDays(1)));
+            var wasteTypesDataSource = new UmbracoWasteTypesDataSource(ReadUrlFromConfig("WasteTypesDataUrl"), new HttpClientProvider(new ConfigurationProxyProvider()), new ApplicationCacheStrategy<List<string>> { CacheDuration = TimeSpan.FromDays(1) });
             model.WasteTypes = await wasteTypesDataSource.LoadWasteTypes();
 
             // Feed options from another page
